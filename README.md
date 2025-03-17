@@ -25,13 +25,22 @@
 </div>
 <br>
 
- 
 
-<video loop src="./assets/animation-d6.mp4">v1</video>
-<video loop src="./assets/animation-d9.mp4">v2</video>
-<video loop src="./assets/animation-d11.mp4">v3</video>
-<video loop src="./assets/animation-d12.mp4">v4</video>
-<video loop src="./assets/animation-d20.mp4">v5</video>
+<video autoplay loop muted playsinline>  
+  <source src="./assets/animation-d6.mp4" type="video/mp4"> 
+</video>
+<video autoplay loop muted playsinline>  
+  <source src="./assets/animation-d9.mp4" type="video/mp4"> 
+</video> 
+<video autoplay loop muted playsinline>  
+  <source src="./assets/animation-d12.mp4" type="video/mp4"> 
+</video> 
+<video autoplay loop muted playsinline>  
+  <source src="./assets/animation-d11.mp4" type="video/mp4"> 
+</video> 
+<video autoplay loop muted playsinline>  
+  <source src="./assets/animation-d20.mp4" type="video/mp4"> 
+</video> 
 
 ## 🔥 News 
 - **`2025/02/14`** 🌟 We released the **code** and [**webpage**](https://tingtingliao.github.io/soap) of SOAP.
