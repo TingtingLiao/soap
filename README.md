@@ -25,8 +25,8 @@
 </div>
 <br> 
 
-<video autoplay loop muted playsinline>  
-  <source src="https://github.com/TingtingLiao/soap/tree/main/assets/animation-d6.mp4" type="video/mp4"> 
+<video autoplay="" loop="">  
+  <source src="./assets/animation-d6.mp4" type="video/mp4"> 
 </video>
 <video autoplay loop muted playsinline>  
   <source src="https://github.com/TingtingLiao/soap/tree/main/assets/animation-d9.mp4" type="video/mp4"> 
