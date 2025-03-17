@@ -16,7 +16,7 @@
     ·
     <a href="https://www.hao-li.com/Hao_Li/Hao_Li_-_about_me.html"><strong>Hao Li</strong></a>
   </p> -->
-<div align="center">
+<!-- <div align="center"> -->
   <!-- <a href='LICENSE'><img src='https://img.shields.io/badge/license-MIT-yellow'></a> -->
   <a href=''><img src='https://img.shields.io/badge/arXiv-Paper-red?logo=arxiv&logoColor=red'></a>
   <a href='https://tingtingliao.github.io/soap'><img src='https://img.shields.io/badge/project-homepage-orange?logo=Homepage&logoColor=orange'></a>
