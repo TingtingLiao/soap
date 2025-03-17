@@ -16,30 +16,29 @@
     ·
     <a href="https://www.hao-li.com/Hao_Li/Hao_Li_-_about_me.html"><strong>Hao Li</strong></a>
   </p> -->
-<!-- <div align="center"> -->
+<div align="center">
   <!-- <a href='LICENSE'><img src='https://img.shields.io/badge/license-MIT-yellow'></a> -->
   <a href=''><img src='https://img.shields.io/badge/arXiv-Paper-red?logo=arxiv&logoColor=red'></a>
   <a href='https://tingtingliao.github.io/soap'><img src='https://img.shields.io/badge/project-homepage-orange?logo=Homepage&logoColor=orange'></a>
   <a href="https://github.com/TingtingLiao/soap"><img src="https://img.shields.io/github/stars/TingtingLiao/soap?logo=github&logoColor=white"></a>
   <a href=''><img src='https://img.shields.io/badge/license-MIT-blue?logo=C&logoColor=blue'></a>
 </div>
-<br>
-
+<br> 
 
 <video autoplay loop muted playsinline>  
-  <source src="./assets/animation-d6.mp4" type="video/mp4"> 
+  <source src="https://github.com/TingtingLiao/soap/tree/main/assets/animation-d6.mp4" type="video/mp4"> 
 </video>
 <video autoplay loop muted playsinline>  
-  <source src="./assets/animation-d9.mp4" type="video/mp4"> 
+  <source src="https://github.com/TingtingLiao/soap/tree/main/assets/animation-d9.mp4" type="video/mp4"> 
 </video> 
 <video autoplay loop muted playsinline>  
-  <source src="./assets/animation-d12.mp4" type="video/mp4"> 
+  <source src="https://github.com/TingtingLiao/soap/tree/main/assets/animation-d12.mp4" type="video/mp4"> 
 </video> 
 <video autoplay loop muted playsinline>  
-  <source src="./assets/animation-d11.mp4" type="video/mp4"> 
+  <source src="https://github.com/TingtingLiao/soap/tree/main/assets/animation-d11.mp4" type="video/mp4"> 
 </video> 
 <video autoplay loop muted playsinline>  
-  <source src="./assets/animation-d20.mp4" type="video/mp4"> 
+  <source src="https://github.com/TingtingLiao/soap/tree/main/assets/animation-d20.mp4" type="video/mp4"> 
 </video> 
 
 ## 🔥 News 
