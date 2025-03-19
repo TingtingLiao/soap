@@ -1,0 +1,638 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<!-- Favicon -->
+<link rel="icon" type="image/x-icon" href="./src/img/favicon.ico">
+
+<!-- Title -->
+<title>SOAP: Style-Omniscient Animatable Portraits</title>
+<link href="./src/css/style.css" rel="stylesheet">
+<link rel="stylesheet" href="./src/css/bulma.min.css">
+<link rel="stylesheet" href="./src/css/bulma-carousel.min.css">
+<link rel="stylesheet" href="./src/css/index.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="./src/js/bulma-carousel.min.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="./src/js/index.js"></script>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
+</head>
+
+<!-- Author -->
+<body>
+<div class="content">
+  
+  <h1>
+    <img src="./src/img/favicon.png" alt="Logo" style="width: 65px; height: 65px; vertical-align: middle; margin-right: 10px;">
+    <strong>SOAP: Style-Omniscient Animatable Portraits</strong>
+  </h1>
+
+  <div class="columns is-centered">
+    <div class="column has-text-centered">
+      <div class="is-size-5 publication-authors">
+        <span class="row">
+            <a href="https://tingtingliao.github.io/">Tingting Liao<sup>1</sup></a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="https://paulyzheng.github.io/about/">Yujian Zheng<sup>1</sup></a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="https://xiuyuliang.cn/">Yuliang Xiu<sup>2</sup></a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="">Adilbek Karmanov<sup>3</sup></a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="">Leyang Jin<sup>1</sup></a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="">Liwen Hu<sup>3</sup></a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="https://www.hao-li.com/">Hao Li<sup>1,3</sup></a>
+          </span>
+      </div>
+    </div>
+  </div>
+
+  <p id="authors" style="margin-top: 10px;">
+      <span style="font-size: 15px; margin-top: 0;">
+        <span class="author-block">
+          <strong><sup>1</sup>MBZUAI</strong>&nbsp;&nbsp;
+          <strong><sup>2</sup>Max Planck Institute for Intelligent Systems</strong>&nbsp;&nbsp;
+          <strong><sup>3</sup>Pinscreen</strong>
+        </span>
+  </p> 
+
+
+  <font style="font-size: 1.8em;">
+    <div style="text-align: center; display: flex; justify-content: center; gap: 40px; align-items: center;">
+      <a target="_blank" href="">
+        <div style="display: flex; align-items: center;">
+          <img src="./src/img/th.png" alt="arXiv" style="width: 18px; margin-right: 2px;">
+          <span>Paper</span>
+        </div>
+      </a>
+
+      <!-- <a target="_blank" href="">
+        <div style="display: flex; align-items: center;">
+          <img src="./src/img/hf-logo.svg" alt="github" style="width: 28px; margin-right: 2px;">
+          <span>Online Demo</span>
+        </div>
+      </a> -->
+
+      <a target="_blank" href="https://github.com/TingtingLiao/soap">
+        <div style="display: flex; align-items: center;">
+          <img src="./src/img/github.png" alt="github" style="width: 18px; margin-right: 10px;">
+          <span>Code</span>
+        </div>
+      </a>
+      <a href="" target="_blank">
+        <span class="icon">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" alt="YouTube Logo" class="youtube-logo">
+        </span>
+        <span>Video</span>
+      </a>
+
+    </div>
+  </font>
+
+  <br><br>
+  <!-- <div class="card">
+    <video poster="" id="card-image" autoplay controls muted loop width="100%">
+      <source src="./src/video/exp_control/gui.webm" type="video/mp4">
+    </video>
+  </div> -->
+</div>
+
+
+
+<!------------- Abstract ------------------>
+
+<div class="content">
+  <h2 style="text-align:center"><strong>Abstract</strong></h2>
+  SOAP awakens the 3D princess from 2D stylized photos. Unlike other works that directly drive the 2D photos, SOAP reconstructs well-rigged 3D avatars, with detailed geometry and all-around texture, from just a single stylized picture. The main challenges lie in 1) How to accurately deform and correctly rig one head template, to adapt to a diverse range of styles, shapes, and haircuts. 2) How to maintain the cross-view consistency, both in color and shape. To tackle these challenges, we created a large-scale 3D head dataset with 24K avatars and trained a multi-view diffuser. This model generalizes across realistic humans and cartoon characters, significantly outperforming those generic ones. Additionally, we introduce an adaptive fit-and-rig pipeline that deforms, rigs, and paints parametric head models, i.e., FLAME, to produce high-resolution (20K+ faces) mesh-based avatars with consistent texture, teeth and eyes, fine-grained skinning weights and head parsing labels. This enables the stylized 3D avatar to be freely animated with extreme expressions, natural eye movements, and lifelike lip motions.
+</div>
+
+
+<!------------- Method Overview ------------------>
+<div class="content">
+  <h2 style="text-align:center"><strong>Method</strong></h2> 
+  <img src="./src/img/pipeline.png" alt="" style="display: block; margin: 0 auto; width: 100%;">
+</div> 
+  <!-- Geometry Reconstruction -->
+ <!-- TODO: add description on right side -->
+  <!------------- Geometry Optimization ------------------>
+ <!-- <div class="content">
+  <h2 style="text-align:center"><strong>Geometry Optimization</strong></h2> 
+ <div class="column">  
+    <h4 style="text-align:center; font-size: larger;">Geometry Optimization Visualization</h4>
+    <div class="columns is-vcentered interpolation-panel-eyes">  
+      <img src="./src/img/geo_optim.png"  alt="" style="width: 25%;" />
+      <div class="column interpolation-video-column">
+        <div id="interpolation-image-wrapper-lip">
+          Loading...
+        </div>
+        <br>
+        <input class="slider is-fullwidth is-large is-info" id="interpolation-slider-lip" step="1" min="0" max="100"
+          value="0" type="range">
+      </div>
+    </div>
+  </div>
+</div>  -->
+
+<!------------- Results ------------------>
+<div class="content">
+  <h2 style="text-align:center"><strong>Reconstructions</strong></h3>
+  <!-- <p style="text-align:center; font-size: medium;">All source videos are generated from a single image by <a href="https://kling.kuaishou.com/en"><strong>Kling</strong></a></p> -->
+
+  <style>
+    #tree {
+      border: none;
+      margin: 0;
+      padding: 0;
+      display: block;
+      clip-path: inset(0px);  /* 裁剪视频的边缘1个像素 */
+    }
+  </style>
+
+  <div id="carousel" class="carousel" style="overflow: hidden; margin-top: 0px; font-weight: bold; font-size: 1.2em">
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/1728079738272.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/1728079749210.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/1728080041500.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/1728080222998.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/1728080146481.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/c13.mp4" type="video/mp4">
+      </video>
+    </div>
+    
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/9d7ee8f6f8eb8ef7b4661b8f8bbece02_high.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/9fa55e11cf48788847a4e3fa9e0ecb57cd1076bb_high.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/boy.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/50.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/025.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/001.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/1728081352471.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/1728074098951.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/001.mp4" type="video/mp4">
+      </video>
+    </div> -->
+
+
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/1a26a6360fbc3081e1468c9a30df4efa.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/06fa3e9cfe16c0096a69983a43fc6dca.mp4" type="video/mp4"> 
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/43b1da5a73f9b5725408516126de9904.mp4" type="video/mp4"> 
+      </video>
+    </div>
+
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/1aa80ae4514db47f0cafb4761377495b.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/80b3ee6eb23b1f3bdf7617e71d090924.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/85f08eddd7aa298e86da0f7e617a01c3.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/02b2c2aa5e46359c310132799e0aa716.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/89e55777c126f17086d69cd91c458fd4.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/9945d84c39a29ce4cb3efcaa6a9ed659.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/4d2248c89f18509849b662e2697e3fd1.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/12953bd03431b60ae7a095a39d4a7ed2.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/86385d04a2780c6a5f9511459a901a49.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/4e41d510d649246ad992f6930daba5fb.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/175265dc92f3880b1ed2fc850443e50d.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/a2ab3758f20a988271118136f1cb99b4.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/249566dc08ab3f5d504f04a2e946ec52.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/a31bc406402b2ec9a710e82e9c2a5b60.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/b2fc16b77a91dfb209c2fd832a8f76d9.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/b10162243d8f53fb159192dc9ea90256.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/c5889f67167b340401a7a209017ae793.mp4" type="video/mp4">
+      </video>
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/reconstruction/cb94c06ce39bd84629ea3058a7d6bd7d.mp4" type="video/mp4">
+      </video>
+    </div>
+  
+  </div>
+</div>
+  <!-- <h4 style="text-align:center"><strong>Reconstruction   Skinning Parsing</strong></h4> -->
+<!-- </div> -->
+
+<!-- <div class="content"> -->
+  <!-- <p style="text-align:center; font-size: medium;">All source videos are generated from a single image by <a href="https://kling.kuaishou.com/en"><strong>Kling</strong></a></p> -->
+
+
+
+  <!-- <div id="carousel" class="carousel" style="overflow: hidden; margin-top: 0px; font-weight: bold; font-size: 1.2em">
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/animation-d0.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/animation-d11.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/animation-d12.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/animation-d18.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/animation-d19.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/animation-d6.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+  <h4 style="text-align:center"><strong>Animation</strong></h3> -->
+
+<!-- </div>  -->
+
+
+
+<div class="content">
+  <h2 style="text-align:center"><strong>Animation</strong></h2>
+   <div id="carousel" class="carousel" style="overflow: hidden; margin-top: 0px; font-weight: bold; font-size: 1.2em">
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d9/001.mp4" type="video/mp4"> 
+      </video> 
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d9/025.mp4" type="video/mp4"> 
+      </video>  
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d9/9945d84c39a29ce4cb3efcaa6a9ed659.mp4" type="video/mp4"> 
+      </video>  
+    </div>
+
+
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d11/85f08eddd7aa298e86da0f7e617a01c3.mp4" type="video/mp4"> 
+      </video> 
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d11/51.mp4" type="video/mp4"> 
+      </video> 
+      <video poster="" id="card-image" autoplay controls muted loop width="100%"> 
+        <source src="./src/video/animation/d11/175265dc92f3880b1ed2fc850443e50d.mp4" type="video/mp4"> 
+      </video> 
+    </div>
+
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d12/c12.mp4" type="video/mp4"> 
+      </video> 
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d12/0da737728ea5f2861c0f844c077c6d2a.mp4" type="video/mp4"> 
+      </video>  
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d12/43b1da5a73f9b5725408516126de9904.mp4" type="video/mp4"> 
+      </video>  
+    </div>
+    
+ 
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d9/Meisje_met_de_parel.mp4" type="video/mp4"> 
+      </video> 
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d9/boy.mp4" type="video/mp4"> 
+      </video>  
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d9/d1f688dad0c57721d97da2e8059e5166682425f9_high.mp4" type="video/mp4"> 
+      </video>  
+    </div>
+
+    <div class="card">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d11/1728080013303.mp4" type="video/mp4"> 
+      </video> 
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d11/1728079738272.mp4" type="video/mp4"> 
+      </video>  
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d11/1728079749210.mp4" type="video/mp4"> 
+      </video>  
+    </div>
+
+    <div class="card"> 
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d12/a31bc406402b2ec9a710e82e9c2a5b60.mp4" type="video/mp4"> 
+      </video>  
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d12/c9188051e2b7363839e9e9f9475fb107.mp4" type="video/mp4"> 
+      </video> 
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/animation/d12/9b9cb1520d130cadd5588c89b3c7551558816c03_low.mp4" type="video/mp4"> 
+      </video>   
+    </div> 
+
+  </div>
+</div>
+ 
+
+<!------------- Applications ------------------>
+<div class="content">
+  <h2 style="text-align:center"><strong> Applications </strong></h2> 
+   
+  <div id="carousel" class="carousel" style="overflow: hidden; margin-top: 0px; font-weight: bold; font-size: 1.2em">
+    
+    <!-- ---------------- Chinese Style ------------------- -->  
+    <div class="card">  
+      <img src="./src/video/application/chinese-00-d0.png" class="overlay-image" alt="Overlay Image">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/application/chinese-00-d20.mp4" type="video/mp4"> 
+      </video>
+    </div>
+
+    <!-- ---------------- Painting Style ------------------- -->
+    <div class="card">
+      <img src="./src/video/application/painting-02.png" class="overlay-image" alt="Overlay Image">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%"> 
+        <source src="./src/video/application/painting-02-d20.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="card">
+      <img src="./src/video/application/painting-01.png" class="overlay-image" alt="Overlay Image">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/application/painting-01-d0.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="card">
+      <img src="./src/video/application/painting-00.png" class="overlay-image" alt="Overlay Image">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/application/painting-00-d18.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- ---------------- celebrity Style ------------------- --> 
+    <div class="card">
+      <img src="./src/video/application/celebrity-00.png" class="overlay-image" alt="Overlay Image">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/application/celebrity-00-d0.mp4" type="video/mp4">
+      </video> 
+    </div>
+
+    <div class="card"> 
+      <img src="./src/video/application/celebrity-01.png" class="overlay-image" alt="Overlay Image">
+      <video poster="" id="card-image" autoplay controls muted loop width="100%">
+        <source src="./src/video/application/celebrity-01-d20.mp4" type="video/mp4">
+      </video>
+    </div>  
+  </div>  
+</div>
+
+<!------------- Meshes ------------------>
+<div class="content">
+  <h2 style="text-align:center"><strong> Mesh Gallery </strong></h2>
+  <div id="carousel" class="carousel"  style="overflow: hidden; margin-top: 0px; font-weight: bold; font-size: 1.2em">
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/001.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/1a26a6360fbc3081e1468c9a30df4efa.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/0da737728ea5f2861c0f844c077c6d2a.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div>
+ 
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/025.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/boy.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/Meisje_met_de_parel.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div> 
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/51.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/50.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/Pocahontas.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div> 
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/1728074098951.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/1728081112417.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/1728081352471.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div>  
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/c13.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/c12.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/c11.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div>  
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/4a404e22c558bdb9b820a49b2283cdac_high.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/1728081416483.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/4e41d510d649246ad992f6930daba5fb.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div> 
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/06fa3e9cfe16c0096a69983a43fc6dca.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/175265dc92f3880b1ed2fc850443e50d.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/43b1da5a73f9b5725408516126de9904.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div> 
+
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/46c4eadcc4b649abeb1016a17019063e.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/80b3ee6eb23b1f3bdf7617e71d090924.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/85f08eddd7aa298e86da0f7e617a01c3.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div> 
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/89e55777c126f17086d69cd91c458fd4.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/9945d84c39a29ce4cb3efcaa6a9ed659.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/86385d04a2780c6a5f9511459a901a49.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div> 
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/249566dc08ab3f5d504f04a2e946ec52.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/a31bc406402b2ec9a710e82e9c2a5b60.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/b2fc16b77a91dfb209c2fd832a8f76d9.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div> 
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/c9188051e2b7363839e9e9f9475fb107.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/ba86df4e7de1fddf8f157160f1bccb29.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/c5889f67167b340401a7a209017ae793.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div> 
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/cb94c06ce39bd84629ea3058a7d6bd7d.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/ef577098ad034f6a2190e07c00263af0.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/f2efb28d06649178b86a373c6078bfeb.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div> 
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/1728079749210.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/1728079738272.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/1728079650960.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div> 
+
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/1728080041500.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/1728079917345.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/1728080013303.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div> 
+
+    <div class="card">
+      <div class="columns">
+        <model-viewer src="./src/mesh/1728080146481.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/1728080179790.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+        <model-viewer src="./src/mesh/1728080222998.glb" style="width: 100%; height: 400px;"  shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+      </div>
+    </div> 
+  </div>
+</div>
+
+
+<div class="content">
+  <h2 style="text-align:center"><strong> GUI Viewer </strong></h2>
+  <video poster="" id="card-image" autoplay controls muted loop width="100%">
+    <source src="./src/video/exp_control/gui-025.mp4" type="video/mp4">
+  </video>
+</div>
+
+<style>
+  pre {
+    font-size: 13px; /* 设置字体大小为 14px */
+  }
+</style>
+
+<div class="content">
+  <h3 style="text-align:center; margin: 0 auto;"><strong>BibTeX</strong></h3> <br>
+  <pre><code>@article{xxx,
+    <!-- title   = {LivePortrait: Efficient Portrait Animation with Stitching and Retargeting Control},
+    author  = {Guo, Jianzhu and Zhang, Dingyun and Liu, Xiaoqiang and Zhong, Zhizhou and Zhang, Yuan and Wan, Pengfei and Zhang, Di},
+    journal = {arXiv preprint arXiv:2407.03168},
+    year    = {2024} -->
+}</code></pre>
+</div>
+  <script>
+    var gifImage = document.getElementById('gif-image');
+
+    gifImage.addEventListener('click', function() {
+      if (gifImage.classList.contains('playing')) {
+        gifImage.classList.remove('playing');
+        gifImage.src = gifImage.src;
+      } else {
+        gifImage.classList.add('playing');
+        gifImage.src = gifImage.src;
+      }
+    });
+  </script>
+</body></html>
