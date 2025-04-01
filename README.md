@@ -23,26 +23,17 @@
   <a href="https://github.com/TingtingLiao/soap"><img src="https://img.shields.io/github/stars/TingtingLiao/soap?logo=github&logoColor=white"></a>
   <a href=''><img src='https://img.shields.io/badge/license-MIT-blue?logo=C&logoColor=blue'></a>
 </div>
-<br> 
+<br>  
 
-<video autoplay="" loop="">  
-  <source src="./assets/animation-d6.mp4" type="video/mp4"> 
+<!-- ![](./assets/avi_driver_1728081352471.mp4) -->
+<video autoplay loop controls>
+  <source src="./assets/avi_driver_1728081352471.mp4" type="video/mp4">
 </video>
-<video autoplay loop muted playsinline>  
-  <source src="https://github.com/TingtingLiao/soap/tree/main/assets/animation-d9.mp4" type="video/mp4"> 
-</video> 
-<video autoplay loop muted playsinline>  
-  <source src="https://github.com/TingtingLiao/soap/tree/main/assets/animation-d12.mp4" type="video/mp4"> 
-</video> 
-<video autoplay loop muted playsinline>  
-  <source src="https://github.com/TingtingLiao/soap/tree/main/assets/animation-d11.mp4" type="video/mp4"> 
-</video> 
-<video autoplay loop muted playsinline>  
-  <source src="https://github.com/TingtingLiao/soap/tree/main/assets/animation-d20.mp4" type="video/mp4"> 
-</video> 
 
 ## 🔥 News 
-- **`2025/02/14`** 🌟 We released the **code** and [**webpage**](https://tingtingliao.github.io/soap) of SOAP.
+- **`2025/04/01`** 🌟 Luanch the project.
+
+<!-- We released the **code** and [**webpage**](https://tingtingliao.github.io/soap) of SOAP -->
 
 # 🍀 Install  
 #### 1. Install environment    
