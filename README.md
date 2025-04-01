@@ -25,10 +25,9 @@
 </div>
 <br>  
 
-<!-- ![](./assets/avi_driver_1728081352471.mp4) -->
-<video autoplay loop controls>
-  <source src="./assets/avi_driver_1728081352471.mp4" type="video/mp4">
-</video>
+
+https://github.com/user-attachments/assets/44f157e5-46a6-4b1c-ad8d-43b485268a71 
+
 
 ## 🔥 News 
 - **`2025/04/01`** 🌟 Luanch the project.
