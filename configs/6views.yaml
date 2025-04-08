@@ -1,0 +1,125 @@
+### Input 
+debug: False     
+save_dir: './output/'
+image: 'data/examples/real/b10162243d8f53fb159192dc9ea90256.jpg'
+# image: './data/examples/new.txt' 
+exp_name: 'newest'
+# render
+bg_color: [0,0,0]
+img_res: 1024 
+near: 0.1 
+far: 10.0
+views: [0, -90, 180, 90, -45, 45]
+# ========= Geo Optimization =========
+vis_interval: 100
+uv_interpolate: True  
+uv_tex: 'mix'  # 'flame' or 'xatlax' or 'mix'
+no_remesh: False
+no_lmk_loss: False 
+learnable_vc: False     
+learnable_eyes: True       
+eye_deg: 120
+gpu_id: 0 
+epoch: 6 
+iters_per_epoch: 800 
+hair_warmup_epoch: 1
+auto_uv: True 
+min_edge_length: 0.0025
+max_edge_length: 0.007
+fix_neck: False
+albedo_res: 2048
+part_color_map:
+  face: [0, 0, 1]
+  hair: [1, 0, 0.33]  
+  neck: [0, 1, 0.33] 
+  eye: [0.8, 0.8, 0]
+
+# ========= Teeth =========
+add_teeth: True 
+
+# ========= Animation =========
+flag_relative_pose: False    
+drivens: { 
+  # 'data/driven/d0.mp4': False,   
+  # 'data/driven/d18.mp4': False, 
+  # 'data/driven/d19.mp4': False,
+  # 'data/driven/d20.mp4': False,  
+  # 'data/driven/d12.mp4': False,    
+  # 'data/driven/d6.mp4': False,   
+  # 'data/driven/d11.mp4': False,   
+  # 'data/driven/d9.mp4': False,   
+  # 'data/driven/avi_driver.mp4': False,
+  # 'data/driven/0001.mp4': False,
+  'data/driven/0000.mp4': False,
+}    
+render_res: 512 
+
+# ========= Loss ========= 
+recon_w: 1.0 
+reg_w: 10 
+lmk_w: 1.0 
+eye_mask_w: 1.0 
+eye_reg_w: 1.0 
+semantic_w: 0.2 
+
+# ========= Processing =========
+
+# cropping 
+shoulder_size: 0.2 
+
+# face_alignment
+face_detector: 'sfd'
+flip_input: False
+
+#  deep3dface  vhap emoca 
+flame_estimation_method: 'deep3dface'
+
+# emoca  
+emoca_ckptdir: './data/emoca'
+emoca_model_name: 'EMOCA_v2_lr_mse_20'
+emoca_mode: 'detail'
+
+# deep3dface
+bfm_folder: ./data/deep3dface/BFM/
+deep3dface_ckptdir: data/deep3dface/
+
+### flame  
+flame_template_path: ./data/flame/head_template_mesh.obj
+flame_model_path: ./data/flame/flame2020.pkl
+num_betas: 300 
+num_expression: 100 
+
+# ========= Diffusion ========
+strength: 0.2
+seed: 42
+image_diffusion:
+  # model: '../head-mvimage-diffuser'
+  model: 'Luffuly/head-mvimage-diffuser'
+  class_labels: [0, 1, 2, 3, 4, 5]
+  forward_args: 
+    width: 256
+    height: 256
+    width_cond: 256
+    height_cond: 256 
+    guidance_scale: 1.5
+    num_inference_steps: 50 
+    num_images_per_prompt: 1
+    output_type: 'pil'
+    eta: 1.0 
+
+normal_diffusion:
+  # model: '../head-mvnormal-diffuser'
+  model: 'Luffuly/head-mvnormal-diffuser'
+  class_labels: [0, 0, 0, 0, 0, 0]  
+  forward_args: 
+    width: 256
+    height: 256
+    width_cond: 256
+    height_cond: 256 
+    guidance_scale: 1.5
+    num_inference_steps: 50 
+    num_images_per_prompt: 1 
+    output_type: 'pil'
+    eta: 1.0 
+  
+diffusion_flame_condition: False     
