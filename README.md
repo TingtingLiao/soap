@@ -30,46 +30,46 @@
 https://github.com/user-attachments/assets/408b3250-0c41-45e2-a43a-25b837800a2e
 
 ## 🔥 News 
-- **`2025/04/01`** 🌟 Luanch the project.
-
-<!-- We released the **code** and [**webpage**](https://tingtingliao.github.io/soap) of SOAP -->
+- **`2025/04/01`** 🌟  **Code** and [**Webpage**](https://tingtingliao.github.io/soap) are released. 
 
 # 🍀 Install  
 #### 1. Install environment    
 ```bash
 git clone --single-branch --branch main  git@github.com:TingtingLiao/soap.git
 cd soap 
-conda create -n soap python=3.10  
+conda create -n soap python=3.10 -y
 conda activate soap   
+# For cuda-12.1 
 pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu121 
+# For cuda-11.8 
+pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu118 
+
 pip install -r requirements.txt  
 ``` 
-#### 2. Download weights
-**Extra Data**
-``` 
-cd data 
-``` 
-**Diffusion Model**
-Download [Deep3dface](https://drive.google.com/drive/folders/1liaIxn9smpudjjqMaWWRpP0mXRW_qRPP) pretrained model under ./data/deep3dface
+#### 2. Download Extra Data 
+Download [extra data](https://download) and unzip it as `./data`.
+
 
 # 🍉 Usage 
 
-**Processing**  
-If you have problem accessing huggingface, set **`export HF_ENDPOINT=https://hf-mirror.com`** or download weights here. 
-```bash  
-python process.py image=data/examples/75997f09a870ae86120d26b5f934a7cae3698f09_high.jpg
-```
+**1. Processing**   
+The pre-processing step will generate the multive images and normals, initial FLAME model, detect facial landmarks and face parsing. Please login huggingface **`huggingface-cli login`** before running: 
 
-**Reconstruction**
+```bash   
+python process.py image=assets/examples/00.png
+```
+ 
+
+**2. Reconstruction**
 ```bash  
-python main.py image=data/examples/75997f09a870ae86120d26b5f934a7cae3698f09_high.jpg
+python main.py image=assets/examples/00.png
 ```  
-The generated results will be saved under **`./output/75997f09a870ae86120d26b5f934a7cae3698f09_high/6-views/w-eyes/`**.
+The generated results will be saved under **`./output/00/6-views/`**.
 
 # 🍋 GUI 
 We provide `gui.py` for visualization and interation with the editing the face shape.
 ```bash 
-python gui.py -i results/75997f09a870ae86120d26b5f934a7cae3698f09_high 
+python gui.py -i results/00 
 ```
  
 # Acknowledgments
