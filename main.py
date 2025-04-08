@@ -137,7 +137,7 @@ class Trainer(nn.Module):
             self.body_model.J_regressor = self.body_model.J_regressor[:, vmapping][:, ids]
             self.body_model.J_regressor[:, 5023:] *= 0  
             self.origin_template = self.body_model.v_template.clone().detach()
-        
+
     def _init_cameras(self):
         """Initialize orthogonal cameras for rendering."""
         self.rot = batch_rodrigues(
@@ -242,12 +242,12 @@ class Trainer(nn.Module):
         mvp = mvp if mvp is not None else self.mvps
         return self.renderer(mesh, mvp, spp=spp, bg_color=self.bg_color, h=H, w=W, shading_mode=shading_mode) 
 
-    def inner_mouth_mask_render(self, mesh, uv_mask, **kwargs):
+    def inner_mouth_mask_render(self, mesh, uv_mask, mvp, **kwargs):
         # render head without inner-teeth 
 
         head_mesh = mesh.clone() 
         head_mesh.albedo = torch.cat([mesh.albedo, 1 - uv_mask.unsqueeze(-1)], -1)
-        head_pkg = self.renderer(head_mesh, self.mvps, **kwargs, shading_mode='albedo')
+        head_pkg = self.renderer(head_mesh, mvp, **kwargs, shading_mode='albedo')
         
         teeth_mesh = Mesh(
             v=mesh.v[-24847:].clone(),
@@ -259,7 +259,7 @@ class Trainer(nn.Module):
         teeth_alpha = uv_mask.clone()
         teeth_alpha[teeth_alpha.shape[0]//2:] = 1
         teeth_mesh.albedo = torch.cat([mesh.albedo, teeth_alpha.unsqueeze(-1)], -1)
-        teeth_pkg = self.renderer(teeth_mesh, self.mvps, **kwargs, shading_mode='lambertian')
+        teeth_pkg = self.renderer(teeth_mesh, mvp, **kwargs, shading_mode='lambertian')
 
         teeth_alpha = (1 - head_pkg['image'][..., 3:]) * teeth_pkg['image'][..., 3:]
         head_pkg['image'] = teeth_pkg['image'][..., :3] * teeth_alpha + head_pkg['image'][..., :3] * (1 - teeth_alpha)
@@ -275,15 +275,21 @@ class Trainer(nn.Module):
         skip_normal=False, 
         skip_skin=False, 
         resize=False, 
+        lmk68=None, 
         ):
         mesh = input_mesh.clone()
         
         frames = [] 
         if input_pil is not None:
-            input_img = input_pil.convert('RGB').resize((res, res))  
-            frames = np.stack([np.array(input_img)[..., :3]] * num_views, 0)
-            
-        pkg = self.renderer.render_360views(mesh, num_views, res, loop=loop, resize=resize, shading_mode=shading_mode, size=0.95)
+            # input_img = input_pil.resize((res, res))  
+            input_img, input_alpha = np.split(np.array(input_pil), [3], axis=-1)
+            input_img = input_img[..., :3] * (input_alpha / 255) + self.bg_color.cpu().numpy() * (1 - input_alpha / 255) 
+            input_img = cv2.resize(input_img, (res, res), interpolation=cv2.INTER_LINEAR)
+            frames = np.stack([input_img.astype(np.uint8)] * num_views, 0)
+        
+        pkg = self.renderer.render_360views(
+            mesh, num_views, res, loop=loop, resize=resize, shading_mode=shading_mode, size=0.95, 
+            bg=list(self.opt.bg_color))
         
         if pkg['image'] is not None:
             rgbs = (pkg['image'].detach().cpu().numpy() * 255).astype(np.uint8) # (num_views, H, W, 3)
@@ -297,17 +303,23 @@ class Trainer(nn.Module):
             lbs_color = lbs_weights_to_colors(self.body_model.lbs_weights.detach().cpu())     
             mesh.vc = torch.tensor(lbs_color).to(self.device)  
             mesh.albedo = None 
-            pkg = self.renderer.render_360views(mesh, num_views, res, loop=loop, resize=resize, shading_mode='lambertian', size=0.95) 
+            pkg = self.renderer.render_360views(
+                mesh, num_views, res, bg=list(self.opt.bg_color), 
+                loop=loop, resize=resize, shading_mode='lambertian', size=0.95) 
             image = (pkg['image'].detach().cpu().numpy() * 255).astype(np.uint8) # (num_views, H, W, 3)
             frames = np.concatenate([frames, image], 2) if len(frames) > 0 else image
         
         mesh.vc = self.parse_labels  
         mesh.albedo = None 
-        pkg = self.renderer.render_360views(mesh, num_views, res, loop=loop, resize=resize, shading_mode='lambertian', size=0.95) 
+        pkg = self.renderer.render_360views(mesh, num_views, res, loop=loop, bg=list(self.opt.bg_color), resize=resize, shading_mode='lambertian', size=0.95) 
         image = (pkg['image'].detach().cpu().numpy() * 255).astype(np.uint8) # (num_views, H, W, 3)
+        if lmk68 is not None:  
+            # lmk68 = torch.matmul(mvps[:, :3, :3], lmk68.T).transpose(1, 2) + mvps[:, :3, 3].unsqueeze(1)
+            image[0] = vis_landmarks(image[0]/255, lmk68) * 255
         frames = np.concatenate([frames, image], 2) if len(frames) > 0 else image
         
         if export_path is not None: 
+            frames = np.concatenate([frames[:1]]*45+[frames], 0)  
             export_video(frames, export_path, fps=num_views/3/loop)
         return frames
     
@@ -441,7 +453,7 @@ class Trainer(nn.Module):
                 f"semantic_loss: {semantic_loss.item():.4f} |"
                 )  
             
-            if vis_interval > 0 and i % vis_interval == 0 and self.debug: 
+            if self.opt.vis_interval > 0 and i % self.opt.vis_interval == 0 and self.debug: 
                 os.makedirs(f'{self.save_dir}/optim', exist_ok=True) 
                 skin_vc = lbs_weights_to_colors(self.body_model.lbs_weights.detach().cpu()) 
                 skin_vc = torch.tensor(skin_vc).to(self.device)
@@ -467,6 +479,7 @@ class Trainer(nn.Module):
                 cv2.putText(vis, f"iter: {self.cnt}", (400, 80), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 4)
                 Image.fromarray(vis).resize((256*len(self.opt.views),256*n_vis)).save(f'{self.save_dir}/optim/{self.cnt:06d}.png')
                 # exit()
+           
             self.cnt += 1 
         
         with torch.no_grad():  
@@ -484,8 +497,19 @@ class Trainer(nn.Module):
         print('LEN driven_frames:', len(driven_frames))
         
         # load motions    
-        motions = np.load(driven.replace('.mp4', '.npz'))   
-        # motions = {k: motions[k] for k in ['rotation', 'neck_pose', 'jaw_pose', 'eyes_pose', 'expr']}
+        motions = np.load(driven.replace('.mp4', '.npz'))     
+        focal_length = motions['focal_length'][0]
+        near, far = 0.1, 10
+        proj = torch.tensor([
+            [2 * focal_length, 0, 0, 0],
+            [0, -2 * focal_length, 0, 0],
+            [0, 0, -(far+near)/(far-near), -2*far*near/(far-near)],
+            [0, 0, -1, 0]
+        ], dtype=torch.float32).reshape(1, 4, 4).expand(4, -1, -1).to(self.device) 
+
+        w2c = torch.eye(4).to(self.device) 
+        w2c[2, 3] = -1 
+        mvp = proj @ w2c  
 
         motions = {
             'betas': motions['shape'], 
@@ -494,15 +518,17 @@ class Trainer(nn.Module):
             'neck_pose': motions['neck_pose'], 
             'global_orient': motions['rotation'],
             'leye_pose': motions['eyes_pose'][:, :3],
-            'reye_pose': motions['eyes_pose'][:, 3:]
+            'reye_pose': motions['eyes_pose'][:, 3:], 
+            'transl': motions['translation'],
         }
         motions = dicts.to_tensor(motions, self.device)  
-        motions['betas'] = motions['betas'].unsqueeze(0).repeat(len(driven_frames), 1)
-
+        motions['betas'] = motions['betas'].unsqueeze(0).repeat(len(motions['neck_pose']), 1)
+        # motions['jaw_pose'][motions['jaw_pose'][:, 0].abs() < 0.1] *= 0
+ 
         # for debugging 
-        flame_vertices = self.flame_model(**motions).vertices  
+        # flame_vertices = self.flame_model(**motions).vertices  
 
-        assert len(driven_frames) == len(motions['global_orient']), f"len(driven_frames) != len(motions['rotation'])"
+        assert len(driven_frames) == len(motions['global_orient']), f"driven_frames:{len(driven_frames)} != {len(motions['jaw_pose'])}"
         # update pose 
         if flag_pasteback:
             motions['global_orient'][:, :3] = data['global_orient'] 
@@ -515,34 +541,26 @@ class Trainer(nn.Module):
             motion_deg[:, 0] = flame_deg[0, 0] 
             motions['global_orient'] = torch.deg2rad(motion_deg) 
         
-        # motions = { 
-        #     'betas': data['betas'],  
-        #     'expression': motions['expr'], 
-        #     'jaw_pose': motions['jaw_pose'],
-        #     'neck_pose': motions['neck_pose'], 
-        #     'global_orient': motions['rotation'],
-        #     'leye_pose': motions['eyes_pose'][:, :3],
-        #     'reye_pose': motions['eyes_pose'][:, 3:]
-        # } 
-        motions['betas'] = data['betas']        
-        # infer flame  
+        motions['betas'] = data['betas']
         vertices = self.body_model(**motions).vertices   
-        vertices = orthogonal_projection(vertices, data['transl'].squeeze(), data['scale']) 
-        
+        # flame_vertices2 = self.flame_model(**motions).vertices  
+
         # render 
         frames = []   
         mesh = base_mesh.clone()
         bg_color = torch.tensor([1.0]*3).to(self.device)
         input_img = np.array(data['input_pil'].convert('RGB').resize((res, res))) 
         rparams = dict(spp=2, h=res, w=res) 
-        for i, (v, df) in enumerate(zip(vertices, driven_frames)):    
+        for i, (v, df) in enumerate(zip(vertices, driven_frames)):
+            # if not i == 60:
+            #     continue    
             # tz = v[:, 2].mean(0)
-            # v[:, 2] -= tz
-            mesh.v = v  
+            # v[:, 2] -= tz 
+            mesh.v = v * 2     
             if uv_mask is None:
-                render_pkg = self.renderer(mesh, self.mvps, bg_color=bg_color, **rparams)
+                render_pkg = self.renderer(mesh, self.mvps[[2]], bg_color=bg_color, **rparams)
             else:
-                render_pkg = self.inner_mouth_mask_render(mesh, uv_mask, **rparams)
+                render_pkg = self.inner_mouth_mask_render(mesh, uv_mask, mvp, **rparams)
             
             rgb = render_pkg['image'][0].detach().cpu().numpy()  
             nml = render_pkg['normal'][0].detach().cpu().numpy()
@@ -560,15 +578,20 @@ class Trainer(nn.Module):
                 # df
                 rgb = rgb * alpha + (1 - alpha)
                 nml = nml * alpha + 1 - alpha 
-                df = cv2.resize(df, (res, res)) 
+                df = cv2.resize(df, (df.shape[1] * res // df.shape[0], res)) 
                 image = np.hstack([df, input_img, rgb* 255, nml * 255])
                 frames.append(image.astype(np.uint8))
 
-            # render driven flame model 
-            flame_mesh = Mesh(v=flame_vertices[i], f=self.flame_model.faces_tensor.int())
-            render_pkg = self.renderer(flame_mesh, self.mvps, bg_color=bg_color, **rparams)
-            frames[-1] = np.hstack([frames[-1].astype(np.uint8), render_pkg['normal'][0].detach().cpu().numpy() * 255])
+            # flame_mesh = Mesh(v=flame_vertices2[i], f=self.flame_model.faces_tensor.int())
+            # render_pkg = self.renderer(flame_mesh, mvp, bg_color=bg_color, **rparams)
+            # frames[-1] = np.hstack([frames[-1], render_pkg['normal'][0].detach().cpu().numpy() * 255]).astype(np.uint8)
 
+            # flame_mesh = Mesh(v=flame_vertices[i], f=self.flame_model.faces_tensor.int())
+            # render_pkg = self.renderer(flame_mesh, mvp, bg_color=bg_color, **rparams)
+            # frames[-1] = np.hstack([frames[-1], render_pkg['normal'][0].detach().cpu().numpy() * 255]).astype(np.uint8)
+            
+            # Image.fromarray(frames[-1].astype(np.uint8)).save(f"test.png")
+            # exit()
         export_video(frames, f"{self.save_dir}/video/animation-{driven.split('/')[-1]}", fps=fps)
         
     def refine_texture(self, mesh, full_texture_mesh=None, max_iter=1500, albedo_mask=None):
@@ -869,34 +892,47 @@ class Trainer(nn.Module):
             # save_obj('test1.obj', mesh.v, mesh.f) 
         return mesh 
     
-    def add_teeth(self, mesh, flame_attributes): # TODO: add teeth
+    def add_teeth(self, mesh, flame_attributes, betas):  
         teeth_mesh = Mesh.load_obj(f'./data/teeth/teeth_tri2.obj', device=self.device)
         teeth_mesh.auto_normal()
         id_mesh = self.body_model.v_template
         
-        target = self.body_model().vertices[0]
+        target = self.body_model(betas=betas).vertices[0]
         trans = (target[3797]+target[3920]-id_mesh[3797]-id_mesh[3920])/2
         scale = torch.norm(target[3797]-target[3920]) / torch.norm(id_mesh[3797]-id_mesh[3920])
         center = torch.mean(teeth_mesh.v, dim=0)
-        # TODO: check bug here 
         teeth_mesh.v = (teeth_mesh.v-center)*scale+center+trans
-        teeth_mesh.v[:, 2] -= 0.015 # move teeth back a little bit
-        # teeth_mesh.v[:, 1] -= 0.005
-
+        # teeth_mesh.v[:, 2] -= 0.005 # move teeth back a little bit
+  
         # load skinning and rigging
         with open(f'./data/teeth/teeth_mask.txt') as file:
             teeth_mask = [int(line.rstrip()) for line in file]
-        flame_attributes['v_template'] = torch.cat((flame_attributes['v_template'], teeth_mesh.v), 0)
-        flame_attributes['shapedirs'] = torch.cat((flame_attributes['shapedirs'], torch.zeros((teeth_mesh.v.shape[0],3,400)).to(self.device)), 0)
-        flame_attributes['posedirs'] = torch.cat((flame_attributes['posedirs'], torch.zeros((36, teeth_mesh.v.shape[0]*3)).to(self.device)), 1)
-        flame_attributes['J_regressor'] = torch.cat((flame_attributes['J_regressor'], torch.zeros((5, teeth_mesh.v.shape[0])).to(self.device)), 1)
-        lbs_temp = []
+        
+        lbs_temp = [] 
+        transl = []   
+        expdir = [] 
         for i in range(teeth_mesh.v.shape[0]):
-            if i in teeth_mask:
-                lbs_temp.append([0,0,1,0,0])
-            else:
-                lbs_temp.append([0,1,0,0,0])
-        flame_attributes['lbs_weights'] = torch.cat((flame_attributes['lbs_weights'], torch.tensor(lbs_temp).to(self.device)), 0)
+            if i in teeth_mask: # attach to jaw 
+                lbs_temp.append([0,0,1,0,0])          
+                transl.append([0, -0.02, -0.005])
+                expdir.append(flame_attributes['shapedirs'][1572, :, 300:]*0)
+            else: # attach to neck  
+                lbs_temp.append([0,1,0,0,0])  
+                transl.append([0, -0.003, -0.005]) 
+                expdir.append(flame_attributes['shapedirs'][1588, :, 300:]*0)
+        transl = torch.tensor(transl).float().to(self.device)
+        expdir = torch.stack(expdir).float().to(self.device)
+        expdir = torch.cat([ 
+            torch.zeros((len(teeth_mesh.v), 3, 300)).to(self.device), expdir  
+        ], -1)
+        teeth_mesh.v += transl  
+        flame_attributes['lbs_weights'] = torch.cat((flame_attributes['lbs_weights'], torch.tensor(lbs_temp).to(self.device)), 0) 
+        flame_attributes['v_template'] = torch.cat((flame_attributes['v_template'], teeth_mesh.v), 0)
+        # flame_attributes['shapedirs'] = torch.cat((flame_attributes['shapedirs'], torch.zeros((len(teeth_mesh.v), 3, 400)).to(self.device)), 0) 
+        flame_attributes['shapedirs'] = torch.cat((flame_attributes['shapedirs'], expdir), 0) 
+        flame_attributes['posedirs'] = torch.cat((flame_attributes['posedirs'], torch.zeros((36, len(teeth_mesh.v)*3)).to(self.device)), 1)
+        flame_attributes['J_regressor'] = torch.cat((flame_attributes['J_regressor'], torch.zeros((5, len(teeth_mesh.v))).to(self.device)), 1)
+
         self.body_model.set_params(flame_attributes)
 
         # combine texture  
@@ -926,8 +962,6 @@ class Trainer(nn.Module):
         return mesh 
     
     def run(self):    
-        # os.system(f'rm -rf {self.save_dir}/video/project.mp4')
-        
         data = self.dataset.get_item()
         data = dicts.to_device(data, self.device) 
         
@@ -1006,21 +1040,41 @@ class Trainer(nn.Module):
                 final_mesh.albedo[:h//2] = face_albedo 
                 mesh = final_mesh.clone()
 
-            # mesh.write(f'{self.save_dir}/recon/recon_textured.obj')
-            # self.render_360view(mesh, export_path=f'{self.save_dir}/video/reconstruction.mp4', input_pil=data['input_pil'])  
-            # torch.save(self.parse_labels, f'{self.save_dir}/parse_labels.pth') 
-            # print('Save to:', f'{self.save_dir}/flame_attributes.pth')
-            # exit()
+            mesh.write(f'{self.save_dir}/recon/recon_textured.obj')
+            self.render_360view(mesh, export_path=f'{self.save_dir}/video/reconstruction.mp4', input_pil=data['input_pil'])  
+            torch.save(self.parse_labels, f'{self.save_dir}/parse_labels.pth') 
+            
         else:   
             flame_attributes = torch.load(f'{self.save_dir}/flame_attributes.pth')
             flame_attributes = dicts.to_device(flame_attributes, self.device)
             mesh = Mesh.load_obj(f'{self.save_dir}/recon/recon_textured.obj', device=self.device)
             self.body_model.set_params(flame_attributes)        
             self.parse_labels = torch.load(f'{self.save_dir}/parse_labels.pth').to(self.device)
-        
+
+            # out = self.body_model(
+            #     betas=data['betas'], 
+            #     expression=data['expression'], 
+            #     global_orient=data['global_orient'],
+            #     jaw_pose=data['jaw_pose'],
+            #     neck_pose=data['neck_pose'],
+            #     # leye_pose=data['leye_pose'],
+            #     # reye_pose=data['reye_pose'],
+            # ) 
+            # lmk = out.joints[0, 5:73]  
+            # lmk = orthogonal_projection(lmk, data['transl'].squeeze(), data['scale'])
+            # lmk = torch.matmul(self.mvps[:, :3, :3], lmk.T).transpose(1, 2) + self.mvps[:, :3, 3].unsqueeze(1)
+            # lmk =lmk[0]
+
+        # self.render_360view(
+        #     mesh, 
+        #     # export_path=f'./scripts/demo/reconstruction-all/{self.subject}.mp4', 
+        #     input_pil=data['input_pil'], 
+        #     export_path=f'{self.save_dir}/video/reconstruction.mp4', 
+        #     lmk68=lmk)  
+        # exit()
         uv_mask = None 
         if self.opt.add_teeth:
-            mesh = self.add_teeth(mesh, flame_attributes)  
+            mesh = self.add_teeth(mesh, flame_attributes, data['betas'])  
             uv_mask = np.array(Image.open('./data/teeth/inner_mouth_mask2.png').resize((2048, 2048))) > 0 
             uv_mask = torch.tensor(uv_mask).to(self.device).float()
         
