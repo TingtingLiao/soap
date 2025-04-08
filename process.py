@@ -525,8 +525,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default='./configs/6views.yaml', help="path to the yaml config file")
     args, extras = parser.parse_known_args()
-    # args = parser.parse_args() 
-
     opt = OmegaConf.merge(OmegaConf.load(args.config), OmegaConf.from_cli(extras))
     
     if opt.debug:
@@ -552,8 +550,6 @@ if __name__ == "__main__":
     }  
     logger.debug(f"Loaded face detector.")
 
-     
-    
     # load mv-diffusion model
     from src.model.pipe import MVDiffusionImagePipeline
     logger.info(f"Loading multiview diffusion...")    
@@ -640,7 +636,7 @@ if __name__ == "__main__":
         # --------------------- 
         # Image Processing 
         # ---------------------  
-        if True or not os.path.exists(osp.join(save_dir, 'process', 'lmk68.txt')) or not os.path.exists(osp.join(save_dir, 'process', 'input.png')):
+        if not os.path.exists(osp.join(save_dir, 'process', 'lmk68.txt')) or not os.path.exists(osp.join(save_dir, 'process', 'input.png')):
             os.system(f"cp {image_file} {save_dir}/process/origin.png")
             print('processing image...')
             # try: 
@@ -681,14 +677,13 @@ if __name__ == "__main__":
             normalized_lmk68 = np.loadtxt(osp.join(save_dir, 'process', 'lmk68.txt'))
             lmk68 = normalized_lmk68 * np.array([rgba.shape[1], rgba.shape[0]]) 
         
-        exit()
         # continue  
         pil_img = change_rgba_bg(Image.fromarray(rgba.astype(np.uint8)), "WHITE")
         
         # -----------------------------------
         # MultiView RGB & Normal Prediction  
         # -----------------------------------  
-        if True or len(os.listdir(osp.join(save_dir, f'images'))) < len(opt.views):            
+        if len(os.listdir(osp.join(save_dir, f'images'))) < len(opt.views):            
             mv_image = images_pipe(
                 [pil_img] * len(opt.views), **opt.image_diffusion.forward_args, 
                 generator = torch.Generator(device='cuda').manual_seed(opt.seed)
