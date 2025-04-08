@@ -3,7 +3,7 @@
   SOAP: Style-Omniscient Animatable Portraits 
 </h1> 
 
-<!-- <p align="center">
+<p align="center">
     <a href="https://tingtingliao.github.io/"><strong>Tingting Liao</strong></a>
     ·
     <a href=""><strong>Yujian Zheng</strong></a>
@@ -15,7 +15,7 @@
     <a href=""><strong>Liwen Hu</strong></a>
     ·
     <a href="https://www.hao-li.com/Hao_Li/Hao_Li_-_about_me.html"><strong>Hao Li</strong></a>
-  </p> -->
+</p>  
 <div align="center">
   <!-- <a href='LICENSE'><img src='https://img.shields.io/badge/license-MIT-yellow'></a> -->
   <a href=''><img src='https://img.shields.io/badge/arXiv-Paper-red?logo=arxiv&logoColor=red'></a>
@@ -26,8 +26,8 @@
 <br>  
 
 
-https://github.com/user-attachments/assets/44f157e5-46a6-4b1c-ad8d-43b485268a71 
 
+https://github.com/user-attachments/assets/408b3250-0c41-45e2-a43a-25b837800a2e
 
 ## 🔥 News 
 - **`2025/04/01`** 🌟 Luanch the project.
