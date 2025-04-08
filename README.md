@@ -6,13 +6,15 @@
 <p align="center">
     <a href="https://tingtingliao.github.io/"><strong>Tingting Liao</strong></a>
     ·
-    <a href=""><strong>Yujian Zheng</strong></a>
+    <a href="https://paulyzheng.github.io/about/"><strong>Yujian Zheng</strong></a>
     ·
     <a href="http://xiuyuliang.cn/"><strong>Yuliang Xiu</strong></a>
     · 
     <a href=""><strong>Adilbek Karmanov</strong></a>
     ·
-    <a href=""><strong>Liwen Hu</strong></a>
+    <a href=""><strong>Leyang Jin</strong></a>
+    ·
+    <a href="https://scholar.google.com/citations?user=Mvq6pGcAAAAJ&hl=en"><strong>Liwen Hu</strong></a>
     ·
     <a href="https://www.hao-li.com/Hao_Li/Hao_Li_-_about_me.html"><strong>Hao Li</strong></a>
 </p>  
