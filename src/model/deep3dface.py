@@ -15,10 +15,11 @@ from deep3dface.data.flist_dataset import default_flist_reader
 
 class PoseEstimator:
     def __init__(self, device, checkpoints_dir, bfm_folder):
-        opt = TestOptions().parse()
+        # exit()
+        opt = TestOptions() 
         opt.bfm_folder = bfm_folder
         opt.checkpoints_dir = checkpoints_dir
-
+        
         self.device = device 
         self.model = create_model(opt)
         self.model.setup(opt)
@@ -27,6 +28,7 @@ class PoseEstimator:
         self.model.eval()
 
         self.lm3d_std = load_lm3d(opt.bfm_folder)
+        
 
     def prepare_data(self, im, lm):
         W, H = im.size
