@@ -25,8 +25,6 @@
 </div>
 <br>  
 
-
-
 https://github.com/user-attachments/assets/408b3250-0c41-45e2-a43a-25b837800a2e
 
 ## 🔥 News 
@@ -37,6 +35,8 @@ https://github.com/user-attachments/assets/408b3250-0c41-45e2-a43a-25b837800a2e
 # 🍀 Install  
 #### 1. Install environment    
 ```bash
+git clone --single-branch --branch main  git@github.com:TingtingLiao/soap.git
+cd soap 
 conda create -n soap python=3.10  
 conda activate soap   
 pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu121 
