@@ -92,7 +92,5 @@ We thank the following projects for their contributions to the development of SO
   <img src="https://contrib.rocks/image?repo=TingtingLiao/soap" />
 </a>
 
-## Contributors
-
 
 
