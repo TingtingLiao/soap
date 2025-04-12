@@ -35,6 +35,10 @@ https://github.com/user-attachments/assets/408b3250-0c41-45e2-a43a-25b837800a2e
 # 🍀 Install  
 #### 1. Install environment    
 ```bash
+sudo apt-get install libegl1-mesa-dev
+sudo apt-get install mesa-common-dev libegl1-mesa-dev libgles2-mesa-dev
+sudo apt-get install mesa-utils
+
 git clone --single-branch --branch main  git@github.com:TingtingLiao/soap.git
 cd soap 
 conda create -n soap python=3.10 -y
@@ -56,7 +60,7 @@ Download [extra data](https://download) and unzip it as `./data`.
 The pre-processing step will generate the multive images and normals, initial FLAME model, detect facial landmarks and face parsing. Please login huggingface **`huggingface-cli login`** before running: 
 
 ```bash   
-python process.py image=assets/examples/00.png
+python process.py image=assets/examples/00.png 
 ```
  
 
@@ -64,14 +68,14 @@ python process.py image=assets/examples/00.png
 ```bash  
 python main.py image=assets/examples/00.png
 ```  
-The generated results will be saved under **`./output/00/6-views/`**.
+The generated results will be saved under **`./output/examples/00/6-views/`**.
 
 # 🍋 GUI 
 We provide `gui.py` for visualization and interation with the editing the face shape.
 ```bash 
 python gui.py -i results/00 
 ```
- 
+
 # Acknowledgments
 We thank the following projects for their contributions to the development of SOAP:
 - [Unique3D](https://github.com/AiuniAI/Unique3D) for multi-view diffusion initialization. 
@@ -80,3 +84,15 @@ We thank the following projects for their contributions to the development of SO
 - [EMOCA](https://github.com/radekd91/emoca) and [Deep3DFaceRecon](https://github.com/sicxu/Deep3DFaceRecon_pytorch) for parametric model estimation. 
 - [Continuous Remeshing](https://github.com/Profactor/continuous-remeshing) for mesh processing. 
 - [FLAME](https://flame.is.tue.mpg.de/) for parametric head model initialization. 
+
+
+## Contributors
+
+<a href="https://github.com/TingtingLiao/soap/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=TingtingLiao/soap" />
+</a>
+
+## Contributors
+
+
+
