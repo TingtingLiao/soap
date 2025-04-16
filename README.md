@@ -28,7 +28,10 @@
 </div>
 <br>  
 
-https://github.com/user-attachments/assets/408b3250-0c41-45e2-a43a-25b837800a2e
+<!-- https://github.com/user-attachments/assets/408b3250-0c41-45e2-a43a-25b837800a2e -->
+
+<video src="https://github.com/user-attachments/assets/408b3250-0c41-45e2-a43a-25b837800a2e" autoplay loop muted playsinline width="640" height="360"> 
+</video>
 
 ## 🔥 News 
 - **`2025/04/01`** 🌟  **Code** and [**Webpage**](https://tingtingliao.github.io/soap) are released. 
