@@ -34,7 +34,7 @@
 </video>
 
 ## 🔥 News 
-- **`2025/04/01`** 🌟  **Code** and [**Webpage**](https://tingtingliao.github.io/soap) are released. 
+- **`2025/04/01`** 🌟 **Code** and [**Webpage**](https://tingtingliao.github.io/soap) are released. 
 
 # 🍀 Install  
 #### 1. Install environment    
@@ -80,7 +80,7 @@ We provide `gui.py` for visualization and interation with the editing the face s
 python gui.py -i results/00 
 ```
 
-# Acknowledgments
+# 🤗 Acknowledgments
 We thank the following projects for their contributions to the development of SOAP:
 - [Unique3D](https://github.com/AiuniAI/Unique3D) for multi-view diffusion initialization. 
 - [FaceParsing](https://huggingface.co/jonathandinu/face-parsing) for hair and eyes segmentation. 
@@ -90,11 +90,12 @@ We thank the following projects for their contributions to the development of SO
 - [FLAME](https://flame.is.tue.mpg.de/) for parametric head model initialization. 
 
 
-## Contributors
+# Contributors
 
 <a href="https://github.com/TingtingLiao/soap/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=TingtingLiao/soap" />
 </a>
 
+# 📖 Citation
 
 
