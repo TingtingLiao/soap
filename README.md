@@ -1,5 +1,4 @@
 <h1 align="center">
-  <img src="./assets/logo.png" style="width: 40px; height: 40px; vertical-align: middle; margin-right: 1px;">
   SOAP: Style-Omniscient Animatable Portraits 
 </h1> 
 
