@@ -8,6 +8,7 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 from face_alignment.utils import flip, get_preds_fromhm
+from types import SimpleNamespace
 from transformers import SegformerImageProcessor, SegformerForSemanticSegmentation
 from src.utils.vis import parsing_from_label_image
 from src.utils.helper import pts_to_bbox
@@ -16,12 +17,13 @@ from src.utils.helper import pts_to_bbox
 class FaceParser(ABC):
     def __init__(self, device, color_map=None):
         if color_map is None:
-            self.color_map = dict(
+            color_map = dict(
                 face=[1, 0, 0.33],
                 hair=[0, 0, 1],
                 neck=[0, 1, 0.33] ,
                 lips=[1, 0, 1],
             )
+            self.color_map = SimpleNamespace(**color_map)
         else:
             self.color_map = color_map
         self.device = device
