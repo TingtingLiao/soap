@@ -46,6 +46,6 @@ huggingface_hub==0.24.6
 git+https://github.com/facebookresearch/pytorch3d.git  
 git+https://github.com/NVlabs/nvdiffrast.git
 git+https://github.com/mattloper/chumpy.git  
-git+https://github.com/ashawkey/cubvh.git 
+#git+https://github.com/ashawkey/cubvh.git 
 git+https://github.com/TingtingLiao/smplx.git  
 git+https://github.com/TingtingLiao/deep3dface.git 
