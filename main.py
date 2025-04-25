@@ -53,7 +53,7 @@ class Trainer(nn.Module):
         
         if self.debug:
             os.makedirs(f'{self.save_dir}/optim_eye', exist_ok=True)
-
+        
         # TODO: remove boundary/neck area 
 
         # dataset 
@@ -280,10 +280,9 @@ class Trainer(nn.Module):
         mesh = input_mesh.clone()
         
         frames = [] 
-        if input_pil is not None:
-            # input_img = input_pil.resize((res, res))  
+        if input_pil is not None: 
             input_img, input_alpha = np.split(np.array(input_pil), [3], axis=-1)
-            input_img = input_img[..., :3] * (input_alpha / 255) + self.bg_color.cpu().numpy() * (1 - input_alpha / 255) 
+            input_img = input_img[..., :3] * (input_alpha / 255) + self.bg_color.cpu().numpy() * (255 - input_alpha) 
             input_img = cv2.resize(input_img, (res, res), interpolation=cv2.INTER_LINEAR)
             frames = np.stack([input_img.astype(np.uint8)] * num_views, 0)
         
@@ -970,7 +969,7 @@ class Trainer(nn.Module):
         
         if not os.path.exists(f'{self.save_dir}/flame_attributes.pth') or not os.path.exists(f'{self.save_dir}/recon/recon_textured.obj') or \
             not os.path.exists(f'{self.save_dir}/parse_labels.pth'):
-              
+            
             mesh = self.geometry_optmization(data) 
             if self.opt.uv_tex == 'flame': 
                 mesh = albedo_from_images_possion_blending(self.renderer, mesh, data['image'], dilate=True) 
@@ -1013,7 +1012,7 @@ class Trainer(nn.Module):
                 f = torch.cat([face_mesh.f, nface_mesh.f + len(face_mesh.v)], 0)
                 vt = torch.cat([face_mesh.vt, nface_mesh.vt], 0)
                 ft = torch.cat([face_mesh.ft, nface_mesh.ft + len(face_mesh.v)], 0)
-                    
+                
                 final_mesh = Mesh(v=v, f=f.int(), vt=vt, ft=ft.int(), device=self.device)
                 final_mesh, albedo_mask = albedo_from_images_possion_blending(
                     self.renderer, final_mesh, data['image'], self.mvps, self.extrinsic, 
@@ -1050,28 +1049,7 @@ class Trainer(nn.Module):
             mesh = Mesh.load_obj(f'{self.save_dir}/recon/recon_textured.obj', device=self.device)
             self.body_model.set_params(flame_attributes)        
             self.parse_labels = torch.load(f'{self.save_dir}/parse_labels.pth').to(self.device)
-
-            # out = self.body_model(
-            #     betas=data['betas'], 
-            #     expression=data['expression'], 
-            #     global_orient=data['global_orient'],
-            #     jaw_pose=data['jaw_pose'],
-            #     neck_pose=data['neck_pose'],
-            #     # leye_pose=data['leye_pose'],
-            #     # reye_pose=data['reye_pose'],
-            # ) 
-            # lmk = out.joints[0, 5:73]  
-            # lmk = orthogonal_projection(lmk, data['transl'].squeeze(), data['scale'])
-            # lmk = torch.matmul(self.mvps[:, :3, :3], lmk.T).transpose(1, 2) + self.mvps[:, :3, 3].unsqueeze(1)
-            # lmk =lmk[0]
-
-        # self.render_360view(
-        #     mesh, 
-        #     # export_path=f'./scripts/demo/reconstruction-all/{self.subject}.mp4', 
-        #     input_pil=data['input_pil'], 
-        #     export_path=f'{self.save_dir}/video/reconstruction.mp4', 
-        #     lmk68=lmk)  
-        # exit()
+            
         uv_mask = None 
         if self.opt.add_teeth:
             mesh = self.add_teeth(mesh, flame_attributes, data['betas'])  
