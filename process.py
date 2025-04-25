@@ -295,16 +295,35 @@ def process_image(image_path, debug=False, shoulder_size=0.2, pad=0.1):
         landmarks += pad_size  
         crop_info['pad_bbox'] = [pad_size] * 4  
     
-    crop_info['size'] = img.shape[:2]
-
-    # test-uncrop 
-    # from src.utils.crop import uncrop
-    # uncrop(img, crop_info, image).save(f'test.png')
-    # exit()
+    crop_info['size'] = img.shape[:2] 
     face_parsing(img, face_parser, landmarks, save_dir=save_dir)
     
     return img, landmarks, crop_info
 
+
+def process_image2(image_path, shoulder_size=0.2, pad=0.1):
+    image = Image.open(image_path)   
+    image.thumbnail([2048, 2048], Image.Resampling.LANCZOS)  
+     
+   
+    # crop by landmarks
+    landmarks = landmark_detection(face_detectors, np.array(image)[..., :3])  
+    img = np.array(image) 
+    
+    
+    crop_info = {
+        'origin_size': image.size,
+        'crop_bbox': [
+            0,
+            0,
+            img.shape[1],
+            img.shape[0],
+        ] 
+    }  
+    crop_info['size'] = img.shape[:2] 
+    face_parsing(img, face_parser, landmarks, save_dir=save_dir)
+    
+    return img, landmarks, crop_info
 
 
 def face_parsing(image, face_parser, lmk68, remove_bg=False, pad=0, save_dir=None):
@@ -604,7 +623,7 @@ if __name__ == "__main__":
 
     # prepare dir 
     if opt.debug:
-        opt.debug_dir = os.path.join(opt.save_dir, 'debug')
+        opt.debug_dir = os.path.join(opt.save_dir, '../debug')
         debug_lmk_dir = osp.join(opt.debug_dir, 'landmarks')  
         debug_eyeseg_dir = osp.join(opt.debug_dir, 'eyeseg') 
         debug_mvimg_dir = osp.join(opt.debug_dir, 'multi-view') 
@@ -620,8 +639,7 @@ if __name__ == "__main__":
         os.makedirs(debug_parse_dir, exist_ok=True)
 
     # process  
-    for image_file in image_files:
-        # try:
+    for image_file in image_files: 
         logger.debug('Processing image: %s' % image_file)
 
         image_name = osp.basename(image_file).split("/")[-1].split(".")[0]
@@ -639,25 +657,19 @@ if __name__ == "__main__":
         if not os.path.exists(osp.join(save_dir, 'process', 'lmk68.txt')) or not os.path.exists(osp.join(save_dir, 'process', 'input.png')):
             os.system(f"cp {image_file} {save_dir}/process/origin.png")
             print('processing image...')
-            # try: 
-            rgba, lmk68, params = process_image(
-                image_file, 
-                shoulder_size=opt.shoulder_size, 
-                debug=False, 
-                pad=0.1
-            )    
-            # except Exception as e:
-            #     logger.error(f"Error in processing image: {image_file}, {e}")
-            #     continue
+            try: 
+                rgba, lmk68, params = process_image(
+                    image_file, 
+                    shoulder_size=opt.shoulder_size,  
+                    pad=0.1
+                )    
+            except Exception as e:
+                logger.error(f"Error in processing image: {image_file}, {e}")
+                continue
             # save input 
             Image.fromarray(rgba.astype(np.uint8)).save(f'{save_dir}/process/input.png')
             np.save(osp.join(save_dir, 'process', 'crop_info.npy'), params)
 
-            # from src.utils.crop import uncrop
-            # rgba = Image.open(osp.join(save_dir, 'images', '0.png'))
-            # crop_info = np.load(osp.join(save_dir, 'process', 'crop_info.npy'), allow_pickle=True).item()
-            # uncrop(rgba, crop_info, Image.open(image_file)).save(f'test.png')
-            # exit()
             # save landmarks 
             normalized_lmk68 = lmk68 / np.array([rgba.shape[1], rgba.shape[0]])
             np.savetxt(f'{save_dir}/process/lmk68.txt', normalized_lmk68, fmt='%.4f')
@@ -669,9 +681,9 @@ if __name__ == "__main__":
             vis = vis_landmarks(vis, normalized_lmk68 * 2 - 1)   
             vis = np.concatenate([vis, rgba[..., 3:]/255], -1)
             save_image(vis, f"{save_dir}/process/vis-lmk68.png")
-            if opt.debug: 
-                vis = np.concatenate([vis, seg], 1) 
-                save_image(vis, f"{debug_lmk_dir}/{image_name}.png")  
+            # if opt.debug: 
+            #     vis = np.concatenate([vis, seg], 1) 
+            #     save_image(vis, f"{debug_lmk_dir}/{image_name}.png")  
         else: 
             rgba = np.array(Image.open(osp.join(save_dir, 'process', 'input.png'))) 
             normalized_lmk68 = np.loadtxt(osp.join(save_dir, 'process', 'lmk68.txt'))
@@ -716,7 +728,7 @@ if __name__ == "__main__":
                     save_image(output['neck_mask'], f'{save_dir}/parse/neck_mask_{i}.png')
                     save_image(output['hair_mask'], f'{save_dir}/parse/hair_mask_{i}.png') 
                     save_image(output['eye_mask'], f'{save_dir}/parse/eye_mask_{i}.png')
-                
+            
             if opt.debug:  
                 mvimg = np.hstack([np.array(img.resize((256, 256))) for img in mv_image])
                 mvnml = np.hstack([np.array(img.resize((256, 256))) for img in mv_normal])
@@ -729,6 +741,7 @@ if __name__ == "__main__":
                 torch.stack([torch.tensor(np.array(img)) for img in mv_normal]).float() / 255, 
                 opt.views 
                 )  
+                
             # --------------------------------------- 
             # Optimize Flame using Multi-View Images 
             # ---------------------------------------  
