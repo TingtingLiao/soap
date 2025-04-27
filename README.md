@@ -65,13 +65,20 @@ The pre-processing step will generate the multive images and normals, initial FL
 ```bash   
 python process.py image=assets/examples/00.png 
 ```
- 
+
 
 **2. Reconstruction**
 ```bash  
 python main.py image=assets/examples/00.png
 ```  
 The generated results will be saved under **`./output/examples/00/6-views/`**.
+
+These results are rendered by `nvidiffrast`. We recommend you to use `blender3.6` for realistic rendering. We provide one example here for reference. 
+
+**3. Blender Rendering**
+
+The code is coming soon. 
+
 
 # 🍋 GUI 
 We provide `gui.py` for visualization and interation with the editing the face shape.
