@@ -564,8 +564,6 @@ class Trainer(nn.Module):
             rgb = render_pkg['image'][0].detach().cpu().numpy()  
             nml = render_pkg['normal'][0].detach().cpu().numpy()
             alpha = render_pkg['alpha'][0].detach().cpu().numpy() 
-            # rgb = render_pkg['image'] * render_pkg['alpha'] + 1 - render_pkg['alpha']
-            # rgb = rgb[0].detach().cpu().numpy() * 255
 
             if flag_pasteback:  
                 rgb = rgb * alpha * 255 + input_img * (1 - alpha) 
@@ -581,16 +579,6 @@ class Trainer(nn.Module):
                 image = np.hstack([df, input_img, rgb* 255, nml * 255])
                 frames.append(image.astype(np.uint8))
 
-            # flame_mesh = Mesh(v=flame_vertices2[i], f=self.flame_model.faces_tensor.int())
-            # render_pkg = self.renderer(flame_mesh, mvp, bg_color=bg_color, **rparams)
-            # frames[-1] = np.hstack([frames[-1], render_pkg['normal'][0].detach().cpu().numpy() * 255]).astype(np.uint8)
-
-            # flame_mesh = Mesh(v=flame_vertices[i], f=self.flame_model.faces_tensor.int())
-            # render_pkg = self.renderer(flame_mesh, mvp, bg_color=bg_color, **rparams)
-            # frames[-1] = np.hstack([frames[-1], render_pkg['normal'][0].detach().cpu().numpy() * 255]).astype(np.uint8)
-            
-            # Image.fromarray(frames[-1].astype(np.uint8)).save(f"test.png")
-            # exit()
         export_video(frames, f"{self.save_dir}/video/animation-{driven.split('/')[-1]}", fps=fps)
         
     def refine_texture(self, mesh, full_texture_mesh=None, max_iter=1500, albedo_mask=None):
@@ -791,7 +779,7 @@ class Trainer(nn.Module):
         labels = torch.argmin(vc_idff, 1)
         
         # set camera  
-        mvp = self.renderer.get_orthogonal_cameras(n=7, yaw_range=(-30, 30), endpoint=True)
+        mvp = self.renderer.get_orthogonal_cameras(n=7, yaw_range=(-30, 30))
         mvp = mvp.to(self.mvps) 
         
         v_template = self.body_model.v_template.clone().detach()
