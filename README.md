@@ -24,8 +24,9 @@
   <a href=""><img src="https://img.shields.io/static/v1?label=%F0%9F%A4%96%20Released&message=Models&color=green"></a> &ensp;
   <a href="https://github.com/TingtingLiao/soap"><img src="https://img.shields.io/github/stars/TingtingLiao/soap?logo=github&logoColor=white"></a>  &ensp;
   <a href=''><img src='https://img.shields.io/badge/license-MIT-blue?logo=C&logoColor=blue'></a>
-</div>
-<br>  
+</div>  
+
+<h3 align="center">Siggraph 2025 (Conference Track)</h3>
 
 <!-- https://github.com/user-attachments/assets/408b3250-0c41-45e2-a43a-25b837800a2e -->
 
@@ -33,7 +34,8 @@
 </video>
 
 ## 🔥 News 
-- **`2025/04/01`** 🌟 **Code** and [**Webpage**](https://tingtingliao.github.io/soap) are released. 
+- **`2025/04/30`** 🌟 **Code** and [**Webpage**](https://tingtingliao.github.io/soap) are released. 
+- **`2025/04/29`** 🚀 SOAP is accpted by Siggraph2025.  
 
 # 🍀 Install  
 #### 1. Install environment    
@@ -73,8 +75,7 @@ python main.py image=assets/examples/00.png
 ```  
 The generated results will be saved under **`./output/examples/00/6-views/`**.
 
-These results are rendered by `nvidiffrast`. We recommend you to use `blender3.6` for realistic rendering. We provide one example here for reference. 
-
+These results are rendered by `nvidiffrast`. We recommend you to use `blender3.6` for realistic rendering. 
 **3. Blender Rendering**
 
 The code is coming soon. 
