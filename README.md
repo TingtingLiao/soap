@@ -22,7 +22,7 @@
   <a href=''><img src='https://img.shields.io/badge/arXiv-Paper-darkred?logo=arxiv&logoColor=darkred'></a>  &ensp;
   <a href='https://tingtingliao.github.io/soap'><img src='https://img.shields.io/badge/project-homepage-orange?logo=Homepage&logoColor=orange'></a>  &ensp;
   <a href=""><img src="https://img.shields.io/static/v1?label=%F0%9F%A4%96%20Released&message=Models&color=green"></a> &ensp;
-  <a href="https://github.com/TingtingLiao/soap"><img src="https://img.shields.io/github/stars/TingtingLiao/soap?logo=github&logoColor=white"></a>  &ensp;
+  <a href="https://github.com/TingtingLiao/soap"><img src="https://img.shields.io/github/stars/TingtingLiao/soap?logo=github&logoColor=black"></a>  &ensp;
   <a href=''><img src='https://img.shields.io/badge/license-MIT-blue?logo=C&logoColor=blue'></a>
 </div>  
 
