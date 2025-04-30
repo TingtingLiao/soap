@@ -69,7 +69,7 @@ class GUI:
     
     def load_data(self):  
         # load flame params
-        data = torch.load(osp.join(self.in_dir, 'deep3dface/flame.pth'))  
+        data = torch.load(osp.join(self.in_dir, '6-views/deep3dface/flame.pth'))  
         exp = data['expression']
         betas = data['betas']
         global_orient = data['global_orient']
@@ -681,7 +681,7 @@ class GUI:
  
 
         dpg.create_viewport(
-            title="Head-Avatar-Animation",
+            title="SOAP-GUI",
             width=self.out_w + 600,
             height=self.out_h + (45 if os.name == "nt" else 0),
             resizable=False,
