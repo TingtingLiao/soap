@@ -211,18 +211,24 @@ class GUI:
         out = self.renderer(self.mesh, mvp, self.H, self.W, shading_mode=shading)
         buffer_image = out['image'] if self.mode == 'skinning' else out[self.mode] # [H, W, 3]  
         flame_buffer_image = flame_out['image'] if self.mode == 'skinning' else flame_out[self.mode] # [H, W, 3]
-        buffer_image = torch.cat([flame_buffer_image, buffer_image], 1)
+        # buffer_image = torch.cat([flame_buffer_image, buffer_image], 1)
 
         if not self.mode == 'alpha':
             buffer_image = buffer_image * out['alpha'] + (1 - out['alpha'])  
+            flame_buffer_image = flame_buffer_image * flame_out['alpha'] + (1 - flame_out['alpha'])  
         
         if self.mode in ['depth', 'alpha']:
             buffer_image = buffer_image.repeat(1, 1, 1, 3)
+            flame_buffer_image = flame_buffer_image.repeat(1, 1, 1, 3)
+
             if self.mode == 'depth':
                 buffer_image = (buffer_image - buffer_image.min()) / (buffer_image.max() - buffer_image.min() + 1e-20)
         
         buffer_image = buffer_image.contiguous().clamp(0, 1).detach().cpu().numpy() 
+        flame_buffer_image = flame_buffer_image.contiguous().clamp(0, 1).detach().cpu().numpy() 
         
+        # buffer_image = np.hstack([buffer_image, flame_buffer_image])
+
         self.buffer_image = buffer_image 
 
         ender.record()
@@ -721,8 +727,8 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser() 
     parser.add_argument('--H', type=int, default=800, help='gui windown height') 
-    parser.add_argument('--W', type=int, default=1600, help="gui window width")
-    parser.add_argument('-i', '--in_dir', type=str, default='output/real/80b3ee6eb23b1f3bdf7617e71d090924/6-views', help="file to the smplx path")
+    parser.add_argument('--W', type=int, default=800, help="gui window width")
+    parser.add_argument('-i', '--in_dir', type=str, default='output/examples/00/6-views', help="file to the smplx path")
     parser.add_argument('-g', '--gui', type=bool, default=True, help="gui mode or not")   
     opt = parser.parse_args()
 
