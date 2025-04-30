@@ -94,14 +94,14 @@ class GUI:
         self.origin_jawpose = self.jaw_pose.clone()
 
         # update flame model 
-        personal_attributes = torch.load(f"{self.in_dir}/newest/flame_attributes.pth") 
+        personal_attributes = torch.load(f"{self.in_dir}/6-views/newest/flame_attributes.pth") 
         personal_attributes = dicts.to_device(personal_attributes, 'cuda') 
         self.body_model.set_params(personal_attributes)
         
         self.lbs_vc = lbs_weights_to_colors(self.body_model.lbs_weights.detach().cpu()) 
         self.lbs_vc = torch.tensor(self.lbs_vc).to(self.device)  
         
-        self.base_mesh = Mesh.load_obj(f"{self.in_dir}/newest/recon/recon_textured.obj")
+        self.base_mesh = Mesh.load_obj(f"{self.in_dir}/6-views/newest/recon/recon_textured.obj")
 
     @property
     def mesh(self):   
@@ -728,7 +728,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser() 
     parser.add_argument('--H', type=int, default=800, help='gui windown height') 
     parser.add_argument('--W', type=int, default=800, help="gui window width")
-    parser.add_argument('-i', '--in_dir', type=str, default='output/examples/00/6-views', help="file to the smplx path")
+    parser.add_argument('-i', '--in_dir', type=str, default='output/examples/00', help="file to the smplx path")
     parser.add_argument('-g', '--gui', type=bool, default=True, help="gui mode or not")   
     opt = parser.parse_args()
 
