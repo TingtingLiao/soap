@@ -76,6 +76,7 @@ python main.py image=assets/examples/00.png
 The generated results will be saved under **`./output/examples/00/6-views/`**.
 
 These results are rendered by `nvidiffrast`. We recommend you to use `blender3.6` for realistic rendering. 
+
 **3. Blender Rendering**
 
 The code is coming soon. 
@@ -84,7 +85,7 @@ The code is coming soon.
 # 🍋 GUI 
 We provide `gui.py` for visualization and interation with the editing the face shape.
 ```bash 
-python gui.py -i results/00 
+python gui.py -i output/examples/00
 ```
 
 # 🤗 Acknowledgments
