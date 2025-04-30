@@ -54,7 +54,7 @@ pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https
 pip install -r requirements.txt  
 ``` 
 #### 2. Download Extra Data 
-Download [extra data](https://download) and unzip it as `./data`.
+Download [extra data](https://drive.google.com/file/d/1fiFsFV-fu94i3szSDjQp3mSdY18b1zKZ/view?usp=sharing) and unzip it as `./data`.
 
 
 # 🍉 Usage 
@@ -103,5 +103,13 @@ We thank the following projects for their contributions to the development of SO
 </a>
 
 # 📖 Citation
+```bibtex
+@inproceedings{liao2025soap,
+  title={{SOAP: Style-Omniscient Animatable Portraits }},
+  author={Liao, Tingting and Zheng, Yujian and Karmanov, Adilbek and Hu, Liwen and Jin, Leyang and Xiu, Yuliang and Hao Li},
+  booktitle={International Conference on Computer Graphics and Interactive Techniques (SIGGRAPH)},
+  year={2025}
+}
+```
 
 
