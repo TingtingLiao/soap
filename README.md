@@ -87,6 +87,7 @@ We provide `gui.py` for visualization and interation with the editing the face s
 ```bash 
 python gui.py -i output/examples/00
 ```
+https://github.com/user-attachments/assets/20ed6d19-c6d5-4ee1-a355-527b00a5bc82
 
 # 🤗 Acknowledgments
 We thank the following projects for their contributions to the development of SOAP:
