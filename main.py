@@ -413,7 +413,7 @@ class Trainer(nn.Module):
 
             bbox_loss = (vertices.abs() > 1).float().mean() * 10
             
-            if self.opt.semantic_w > 0: 
+            if True or self.opt.semantic_w > 0: 
                 # render parsing  
                 pred_parse = self.render(
                     vertices, faces_all, vc=self.parse_labels, H=render_res, W=render_res, 
@@ -620,7 +620,13 @@ class Trainer(nn.Module):
         return mesh 
     
     def geometry_optmization(self, data, size=(512, 512)):
-        flame_attributes = {} 
+        flame_attributes = {
+            'v_template': self.body_model.v_template,
+            'shapedirs': self.body_model.shapedirs,
+            'posedirs': self.body_model.posedirs,
+            'lbs_weights': self.body_model.lbs_weights,
+            'J_regressor': self.body_model.J_regressor,
+        } 
         # rotate normal to face camera 
         gt_normal = self.rotate_normal(data['normal'], data['mask'])            
         # prepare   
@@ -712,7 +718,13 @@ class Trainer(nn.Module):
                 with torch.no_grad():  
                     self.body_model.update_J_regressor(joints_cano, data['betas'], data['expression'])
                     flame_attributes['J_regressor'] = self.body_model.J_regressor.detach()
-                
+            
+            # debugging 
+            # print('-----debugging-------')
+            # for k, v in flame_attributes.items():
+            #     print(k, v.shape)
+            
+
         if self.opt.epoch > 1:
             dicts.save2pth(flame_attributes, f'{self.save_dir}/flame_attributes.pth')
         
@@ -721,13 +733,8 @@ class Trainer(nn.Module):
         else:
             mesh = Mesh(v=v, f=self.faces, vt=self.vt, ft=self.ft.int(), device=self.device)
             
-        if learn_eyes: 
-            # self.faces = torch.cat([self.tri_wo_eyes, self.tri_eyes], 0)
-            # mesh = Mesh(v=v, f=self.faces, ft=self.faces, device=self.device)
-            mesh = self.eyeball_optimization(data, mesh, in_dict['flame_dict'], joints_cano)
-            # joints_cano[3] = self.body_model.v_template[self.leye_vid].mean(0).detach()
-            # joints_cano[4] = self.body_model.v_template[self.reye_vid].mean(0).detach() 
-            # self.body_model.update_J_regressor(joints_cano, data['betas'], data['expression'])
+        if learn_eyes:  
+            mesh = self.eyeball_optimization(data, mesh, in_dict['flame_dict'], joints_cano) 
             flame_attributes['v_template'] = self.body_model.v_template.detach()
             flame_attributes['J_regressor'] = self.body_model.J_regressor.detach()
             dicts.save2pth(flame_attributes, f'{self.save_dir}/flame_attributes.pth')
@@ -948,7 +955,7 @@ class Trainer(nn.Module):
         mesh.vt[-27392:-23084,:] += 0.5  
         return mesh 
     
-    def run(self):    
+    def run(self):     
         data = self.dataset.get_item()
         data = dicts.to_device(data, self.device) 
         
@@ -961,16 +968,21 @@ class Trainer(nn.Module):
             mesh = self.geometry_optmization(data) 
             if self.opt.uv_tex == 'flame': 
                 mesh = albedo_from_images_possion_blending(self.renderer, mesh, data['image'], dilate=True) 
+                flame_attributes = torch.load(f'{self.save_dir}/flame_attributes.pth')
+                flame_attributes = dicts.to_device(flame_attributes, self.device)
+
             elif self.opt.uv_tex == 'xatlas':
                 mesh = albedo_from_images(self.renderer, mesh, data['image']) 
-            else:  
+                flame_attributes = torch.load(f'{self.save_dir}/flame_attributes.pth')
+                flame_attributes = dicts.to_device(flame_attributes, self.device)
+
+            else:    
                 # get the flame uv 
                 mesh = albedo_from_images_possion_blending(
                     self.renderer, mesh, data['image'], self.mvps, self.extrinsic, 
                     weights=[10, 1, 1, 1, 1, 1], 
                     dilate=True
                 )  
-
                 v_attr = torch.cat([self.pack_attributes(True), self.parse_labels], 1)
                 # find face area  
                 label_colos = torch.tensor([
@@ -1030,14 +1042,15 @@ class Trainer(nn.Module):
             mesh.write(f'{self.save_dir}/recon/recon_textured.obj')
             self.render_360view(mesh, export_path=f'{self.save_dir}/video/reconstruction.mp4', input_pil=data['input_pil'])  
             torch.save(self.parse_labels, f'{self.save_dir}/parse_labels.pth') 
-            
         else:   
             flame_attributes = torch.load(f'{self.save_dir}/flame_attributes.pth')
             flame_attributes = dicts.to_device(flame_attributes, self.device)
             mesh = Mesh.load_obj(f'{self.save_dir}/recon/recon_textured.obj', device=self.device)
             self.body_model.set_params(flame_attributes)        
             self.parse_labels = torch.load(f'{self.save_dir}/parse_labels.pth').to(self.device)
-            
+
+        self.render_360view(mesh, export_path=f'{self.save_dir}/video/reconstruction.mp4', input_pil=data['input_pil'])    
+
         uv_mask = None 
         if self.opt.add_teeth:
             mesh = self.add_teeth(mesh, flame_attributes, data['betas'])  
