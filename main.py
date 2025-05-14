@@ -551,11 +551,7 @@ class Trainer(nn.Module):
         input_img = np.array(data['input_pil'].convert('RGB').resize((res, res))) 
         rparams = dict(spp=2, h=res, w=res) 
         for i, (v, df) in enumerate(zip(vertices, driven_frames)):
-            # if not i == 60:
-            #     continue    
-            # tz = v[:, 2].mean(0)
-            # v[:, 2] -= tz 
-            mesh.v = v * 2     
+            mesh.v = v if driven.split('/')[-1][0] == 'd' else v * 2
             if uv_mask is None:
                 render_pkg = self.renderer(mesh, self.mvps[[2]], bg_color=bg_color, **rparams)
             else:
@@ -912,7 +908,7 @@ class Trainer(nn.Module):
                 expdir.append(flame_attributes['shapedirs'][1572, :, 300:]*0)
             else: # attach to neck  
                 lbs_temp.append([0,1,0,0,0])  
-                transl.append([0, -0.003, -0.005]) 
+                transl.append([0, -0.005, -0.005]) 
                 expdir.append(flame_attributes['shapedirs'][1588, :, 300:]*0)
         transl = torch.tensor(transl).float().to(self.device)
         expdir = torch.stack(expdir).float().to(self.device)
