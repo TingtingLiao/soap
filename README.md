@@ -44,7 +44,7 @@ sudo apt-get install libegl1-mesa-dev
 sudo apt-get install mesa-common-dev libegl1-mesa-dev libgles2-mesa-dev
 sudo apt-get install mesa-utils
 
-git clone --single-branch --branch main  git@github.com:TingtingLiao/soap.git
+git clone --single-branch --branch main  https://github.com/TingtingLiao/soap.git
 cd soap 
 conda create -n soap python=3.10 -y
 conda activate soap   
