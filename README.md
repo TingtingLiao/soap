@@ -7,7 +7,7 @@
     ·
     <a href="https://paulyzheng.github.io/about/"><strong>Yujian Zheng</strong></a>
     · 
-    <a href=""><strong>Adilbek Karmanov</strong></a>
+    <a href="https://www.linkedin.com/in/adilbek-karmanov?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"><strong>Adilbek Karmanov</strong></a>
     · 
     <a href="https://scholar.google.com/citations?user=Mvq6pGcAAAAJ&hl=en"><strong>Liwen Hu</strong></a>
     ·
