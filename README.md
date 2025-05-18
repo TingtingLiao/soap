@@ -107,11 +107,14 @@ We thank the following projects for their contributions to the development of SO
 
 # 📖 Citation
 ```bibtex
-@inproceedings{liao2025soap,
-  title={{SOAP: Style-Omniscient Animatable Portraits }},
-  author={Liao, Tingting and Zheng, Yujian and Karmanov, Adilbek and Hu, Liwen and Jin, Leyang and Xiu, Yuliang and Hao Li},
-  booktitle={International Conference on Computer Graphics and Interactive Techniques (SIGGRAPH)},
-  year={2025}
+@article{liao2025soap, 
+    title={SOAP: Style-Omniscient Animatable Portraits },
+    author={Liao, Tingting and Zheng, Yujian and Karmanov, Adilbek and Hu, Liwen and Jin, Leyang and Xiu, Yuliang and Hao Li},
+    year={2025}, 
+    eprint={2505.05022},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV},
+    url={https://arxiv.org/abs/2505.05022}, 
 }
 ```
 
