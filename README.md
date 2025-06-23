@@ -56,7 +56,10 @@ pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https
 pip install -r requirements.txt  
 ``` 
 #### 2. Download Extra Data 
-Download [extra data](https://drive.google.com/file/d/1fiFsFV-fu94i3szSDjQp3mSdY18b1zKZ/view?usp=sharing) and unzip it as `./data`.
+<!-- Download [extra data](https://drive.google.com/file/d/1fiFsFV-fu94i3szSDjQp3mSdY18b1zKZ/view?usp=sharing) and unzip it as `./data`. -->
+```bash 
+bash download.sh
+```
 
 
 # 🍉 Usage 
