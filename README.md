@@ -81,8 +81,18 @@ The generated results will be saved under **`./output/examples/00/6-views/`**.
 These results are rendered by `nvidiffrast`. We recommend you to use `blender3.6` for realistic rendering. 
 
 **3. Blender Rendering**
+```bash 
+git clone https://github.com/TingtingLiao/soap_blender.git 
+cd soap_blender 
+bash install_blender.sh 
 
-Please check the process in [soap-blender](https://github.com/TingtingLiao/soap_blender). 
+# render 
+python render.py \
+--data_dir ../output/examples \
+--subject 00 \
+--exp newest \
+--driven 0000  
+```
 
 
 # 🍋 GUI 
