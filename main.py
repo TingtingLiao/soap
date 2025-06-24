@@ -413,19 +413,28 @@ class Trainer(nn.Module):
 
             bbox_loss = (vertices.abs() > 1).float().mean() * 10
             
-            if True or self.opt.semantic_w > 0: 
+            if self.opt.semantic_w > 0: 
                 # render parsing  
                 pred_parse = self.render(
                     vertices, faces_all, vc=self.parse_labels, H=render_res, W=render_res, 
                 )['image']  
-                semantic_loss += (((pred_parse[0] - parse_images['front'][0]) * gt_mask[0] * (1 - gt_eye_mask[0])) ** 2).mean() 
+                if gt_eye_mask is not None:
+                    semantic_loss += (((pred_parse[0] - parse_images['front'][0]) * gt_mask[0] * (1 - gt_eye_mask[0])) ** 2).mean() 
+                else:
+                    semantic_loss += (((pred_parse[0] - parse_images['front'][0]) * gt_mask[0]) ** 2).mean() 
                 
                 if 'left_side' in parse_images and 'right_side' in parse_images:
-                    semantic_loss += (
-                        ((pred_parse[4] - parse_images['left_side'][0, ..., :3]) * (1 - pred_eye_mask[4].detach()) * parse_images['left_side'][0, ..., 3:]
-                        ) ** 2).mean()  
-                    semantic_loss += (((pred_parse[5] - parse_images['right_side'][0, ..., :3]) * (1 - pred_eye_mask[5].detach()) * parse_images['right_side'][0, ..., 3:]
-                                    ) ** 2).mean()  
+                    if learn_eyes:
+                        semantic_loss += (
+                            ((pred_parse[4] - parse_images['left_side'][0, ..., :3]) * (1 - pred_eye_mask[4].detach()) * parse_images['left_side'][0, ..., 3:]
+                            ) ** 2).mean()  
+                        semantic_loss += (((pred_parse[5] - parse_images['right_side'][0, ..., :3]) * (1 - pred_eye_mask[5].detach()) * parse_images['right_side'][0, ..., 3:]
+                                        ) ** 2).mean()  
+                    else:
+                        semantic_loss += (((pred_parse[4] - parse_images['left_side'][0, ..., :3]) * parse_images['left_side'][0, ..., 3:]
+                                        ) ** 2).mean()  
+                        semantic_loss += (((pred_parse[5] - parse_images['right_side'][0, ..., :3]) * parse_images['right_side'][0, ..., 3:]
+                                        ) ** 2).mean()  
             
             loss = nml_loss * nml_weight + lmk_loss * self.opt.lmk_w  + lap_loss * reg_weight + semantic_loss * self.opt.semantic_w  
             loss += bbox_loss 
@@ -630,7 +639,6 @@ class Trainer(nn.Module):
         in_dict = {
             'gt_normal': scale_img_nhwc(gt_normal, size),
             'gt_mask': scale_img_nhwc(data['mask'], size),
-            'gt_eye_mask': (scale_img_nhwc(data['eye_mask'], size) > 0.5).float(),
             'neck_mask': scale_img_nhwc(data['neck_mask'], size) if 'neck_mask' in data else None, 
             'parse_images': {k: scale_img_nhwc(v, size) for k,v in data['parse_images'].items()},
             'flame_dict': {
@@ -643,6 +651,9 @@ class Trainer(nn.Module):
             'scale': data['scale'], 
             'gt_lmk68': data['lmks'],    
         }
+
+        if learn_eyes:
+            in_dict['gt_eye_mask'] = (scale_img_nhwc(data['eye_mask'], size) > 0.5).float(), 
         
         for epoch in range(self.opt.epoch):  
             self.epoch = epoch 
@@ -707,6 +718,7 @@ class Trainer(nn.Module):
                         vid_mask=vid_mask
                     ) 
                     self.faces = faces.int()
+                    v_attr, self.parse_labels = v_attr.split([v_attr.shape[1]-3, 3], 1)
                 
                 # update \Omega   
                 flame_attributes = self.unpack_attributes(v_attr) 
