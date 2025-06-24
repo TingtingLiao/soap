@@ -192,28 +192,28 @@ class Dataset(torch.utils.data.Dataset):
         return_dict['parse_images'] = parse_image_dict
         
         if osp.exists(osp.join(self.root, 'process', 'leye_mask.png')):
-            # try:
-            leye_mask, leye_bbox = load_eye_mask(osp.join(self.root, 'process', 'leye_mask.png'))
-            reye_mask, reye_bbox = load_eye_mask(osp.join(self.root, 'process', 'reye_mask.png'))
-            eye_mask = Image.fromarray(np.array(leye_mask) + np.array(reye_mask))
-            eye_mask = self.transform(eye_mask)   # [1, h, w]
-            leye_width = (leye_bbox[2] - leye_bbox[0]) / (leye_mask.size[0] * 0.5)
-            reye_width = (reye_bbox[2] - reye_bbox[0]) / (reye_mask.size[0] * 0.5)
-            
-            parse_image[eye_mask[0].bool()] = torch.tensor(self.opt.part_color_map.eye).to(parse_image)
-            parse_image_dict['front'] = parse_image.unsqueeze(0)
-            # Image.fromarray((parse_image.numpy() * 255).astype(np.uint8)).save('test.png')
-            
-            return_dict.update({
-                'eye_mask': eye_mask.permute(1, 2, 0).unsqueeze(0), 
-                'leye_width': leye_width,  
-                'reye_width': reye_width, 
-                'learnable_eyes': True, 
-                'parse_images': parse_image_dict 
-            })
-            # except Exception as e:
-            #     print(e)
-            #     return_dict['learnable_eyes'] = False 
+            try:
+                leye_mask, leye_bbox = load_eye_mask(osp.join(self.root, 'process', 'leye_mask.png'))
+                reye_mask, reye_bbox = load_eye_mask(osp.join(self.root, 'process', 'reye_mask.png'))
+                eye_mask = Image.fromarray(np.array(leye_mask) + np.array(reye_mask))
+                eye_mask = self.transform(eye_mask)   # [1, h, w]
+                leye_width = (leye_bbox[2] - leye_bbox[0]) / (leye_mask.size[0] * 0.5)
+                reye_width = (reye_bbox[2] - reye_bbox[0]) / (reye_mask.size[0] * 0.5)
+                
+                parse_image[eye_mask[0].bool()] = torch.tensor(self.opt.part_color_map.eye).to(parse_image)
+                parse_image_dict['front'] = parse_image.unsqueeze(0)
+                # Image.fromarray((parse_image.numpy() * 255).astype(np.uint8)).save('test.png')
+                
+                return_dict.update({
+                    'eye_mask': eye_mask.permute(1, 2, 0).unsqueeze(0), 
+                    'leye_width': leye_width,  
+                    'reye_width': reye_width, 
+                    'learnable_eyes': True, 
+                    'parse_images': parse_image_dict 
+                })
+            except Exception as e:
+                print(e)
+                return_dict['learnable_eyes'] = False 
         
         return return_dict
     
