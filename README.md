@@ -82,7 +82,7 @@ These results are rendered by `nvidiffrast`. We recommend you to use `blender3.6
 
 **3. Blender Rendering**
 
-The code is coming soon. 
+Please check the process in [soap-blender](https://github.com/TingtingLiao/soap_blender). 
 
 
 # 🍋 GUI 
