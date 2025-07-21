@@ -30,6 +30,7 @@ def split_mesh(mesh: Mesh,  v_mask: torch.Tensor):
     Returns:
     - (vertices1, faces1), (vertices2, faces2): Tuple of two split meshes.
     """ 
+    
     # Create masks for vertex ownership
     is_in_mesh1 = v_mask.bool()  
     is_in_mesh2 = ~is_in_mesh1  # The rest belong to the second mesh

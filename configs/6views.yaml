@@ -12,7 +12,7 @@ far: 10.0
 views: [0, -90, 180, 90, -45, 45]
 # ========= Geo Optimization =========
 vis_interval: 100
-uv_interpolate: True  
+uv_interpolate: False  
 uv_tex: 'mix'  # 'flame' or 'xatlax' or 'mix'
 no_remesh: False
 no_lmk_loss: False 

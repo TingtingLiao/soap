@@ -70,6 +70,20 @@ def remesh_withuv(
     ):
     from .remesh_uv import calc_edge_length, calc_edges, calc_face_collapses, calc_face_normals, calc_vertex_normals, collapse_edges, flip_edges, pack, prepend_dummies, remove_dummies, split_edges
 
+    if vt is not None and ft is not None:
+        if vt.shape[0] != vertices_etc.shape[0]:
+            new_vt = torch.zeros((vertices_etc.shape[0], vt.shape[1]), dtype=vt.dtype, device=vt.device)
+            vertex_has_uv = torch.zeros(vertices_etc.shape[0], dtype=torch.bool, device=vertices_etc.device)  
+            for i, (f, ft_idx) in enumerate(zip(faces, ft)):
+                for j in range(3):
+                    v_idx = f[j]
+                    vt_idx = ft_idx[j]
+                    if not vertex_has_uv[v_idx]:
+                        new_vt[v_idx] = vt[vt_idx]
+                        vertex_has_uv[v_idx] = True
+            vt = new_vt
+            ft = faces.clone()  
+
     # dummies
     vertices_etc,faces = prepend_dummies(vertices_etc,faces)
     if vt is not None:
