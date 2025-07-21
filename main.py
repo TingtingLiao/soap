@@ -110,6 +110,8 @@ class Trainer(nn.Module):
         self.face_vid = self.body_model.segment.get_vertex_ids(['face', 'neck', 'boundary'])
         self.no_face_vid = ids2mask(self.face_vid, self.body_model.v_template.shape[0], reverse=True)
         
+        self.only_face_vid = self.body_model.segment.get_vertex_ids(['face', 'neck', 'boundary'])
+        
         face_tri_mask = vid2fmask(self.face_vid, self.faces)
         self.face_tri = self.faces[face_tri_mask]
         
@@ -136,7 +138,7 @@ class Trainer(nn.Module):
             self.body_model.set_params(self.unpack_attributes(v_attr)) 
             self.body_model.J_regressor = self.body_model.J_regressor[:, vmapping][:, ids]
             self.body_model.J_regressor[:, 5023:] *= 0  
-            self.origin_template = self.body_model.v_template.clone().detach()
+        self.origin_template = self.body_model.v_template.clone().detach()
 
     def _init_cameras(self):
         """Initialize orthogonal cameras for rendering."""
@@ -639,6 +641,7 @@ class Trainer(nn.Module):
         in_dict = {
             'gt_normal': scale_img_nhwc(gt_normal, size),
             'gt_mask': scale_img_nhwc(data['mask'], size),
+            'gt_eye_mask': (scale_img_nhwc(data['eye_mask'], size) > 0.5).float(),
             'neck_mask': scale_img_nhwc(data['neck_mask'], size) if 'neck_mask' in data else None, 
             'parse_images': {k: scale_img_nhwc(v, size) for k,v in data['parse_images'].items()},
             'flame_dict': {
@@ -651,9 +654,6 @@ class Trainer(nn.Module):
             'scale': data['scale'], 
             'gt_lmk68': data['lmks'],    
         }
-
-        if learn_eyes:
-            in_dict['gt_eye_mask'] = (scale_img_nhwc(data['eye_mask'], size) > 0.5).float(), 
         
         for epoch in range(self.opt.epoch):  
             self.epoch = epoch 
@@ -677,24 +677,27 @@ class Trainer(nn.Module):
                         non_remesh_vid = np.concatenate([non_remesh_vid, self.face_vid], 0)
                     
                     vid_mask = ids2mask(non_remesh_vid, N, device=self.device, reverse=True)
-                    if self.opt.uv_interpolate: 
-                        v_attr, faces, self.vt, self.ft = remesh_withuv(
-                        v_attr, self.faces, 
+
+                    
+                    face_mask = torch.zeros(N, 1, device=v_attr.device)
+                    face_mask[self.only_face_vid] = 1.0
+                    v_attr_with_mask = torch.cat([v_attr, face_mask], dim=1) 
+                    
+                    
+                    v_attr_with_mask, faces, self.vt, self.ft = remesh_withuv(
+                        v_attr_with_mask, self.faces, 
                         self.body_model.v_template.new_ones(N) * self.opt.min_edge_length, 
                         self.body_model.v_template.new_ones(N) * self.opt.max_edge_length,
                         flip=False, 
                         vid_mask=vid_mask, 
                         vt=self.vt, 
                         ft=self.ft
-                    ) 
-                    else: 
-                        v_attr, faces = remesh(
-                            v_attr, self.faces, 
-                            self.body_model.v_template.new_ones(N) * self.opt.min_edge_length, 
-                            self.body_model.v_template.new_ones(N) * self.opt.max_edge_length,
-                            flip=True, 
-                            vid_mask=vid_mask
-                        ) 
+                    )
+                    
+                    face_mask = v_attr_with_mask[:, -1] > 0.5  
+                    v_attr = v_attr_with_mask[:, :-1]
+                    self.only_face_vid = torch.where(face_mask)[0]
+
                     v_attr, self.parse_labels = v_attr.split([v_attr.shape[1]-3, 3], 1)
                     self.faces = faces.int()  
                     # update non-eye fids 
@@ -1001,8 +1004,15 @@ class Trainer(nn.Module):
                 ]).to(self.parse_labels)
                 diff = (self.parse_labels.unsqueeze(1) - label_colos.unsqueeze(0)).abs().mean(2)
                 face_ids = torch.argmax(diff, dim=1)
-                face_mask = (face_ids == 0) | (face_ids == 3) # face and eyes
+                #face_mask = (face_ids == 0) | (face_ids == 3) # face and eye
                 
+                face_mask = self.only_face_vid
+                bool_mask = torch.zeros(mesh.v.shape[0], dtype=torch.bool, device=mesh.v.device)
+                bool_mask[face_mask] = True
+                face_mask = bool_mask  
+                face_mask  = face_mask | (face_ids == 3)
+                    
+
                 face_mesh, nface_mesh, indices = split_mesh(mesh, face_mask)  
                 v_attr = torch.cat([v_attr[indices[0]], v_attr[indices[1]]])
                 v_attr, self.parse_labels = v_attr.split([v_attr.shape[1]-3, 3], 1)
