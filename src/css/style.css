@@ -1,9 +1,8 @@
 /* CSS Document */
-@import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
 body {
-  font-family: 'Open-Sans', sans-serif;
-  font-weight: 300;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-weight: 400;
   background-color: #fff;
   transform: scale(1);
   transform-origin: 0 0;
@@ -15,7 +14,7 @@ body {
   background-color: white;
   box-shadow: 0px 0px 10px #999;
   border-radius: 15px;
-  font-family: "Google Sans";
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
 }
 .contentblock {
   width: 950px;
@@ -50,20 +49,26 @@ a, a:visited {
 h1 {
   text-align: center;
   font-size: 45px;
-  font-weight: 500;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
 }
 h2 {
   font-size: 30px;
-  font-weight: 300;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  color: #2D3436;
 }
 code {
   display: block;
   padding: 10px;
   margin: 10px 10px;
+  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
 }
 p {
-  line-height: 25px;
+  line-height: 1.6;
   text-align: justify;
+  font-size: 16px;
+  color: #333;
 }
 p code {
   display: inline;
@@ -211,4 +216,347 @@ p code {
 }
 .gallery .row img {
   width: 100%;
+}
+
+/* Modern Title Styles */
+h1.modern-title {
+  text-align: center;
+  font-size: 72px !important;
+  font-weight: 800 !important;
+  letter-spacing: 15px;
+  padding-left: 15px;
+  font-family: 'Helvetica Neue', 'Arial Black', sans-serif;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  position: relative;
+}
+
+/* Subtle line under title */
+.modern-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #667eea, #764ba2, transparent);
+  opacity: 0.5;
+}
+
+.title-letter {
+  display: inline-block;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  cursor: default;
+  animation: float 3s ease-in-out infinite;
+  position: relative;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Stagger the animation for each letter */
+.title-letter:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.title-letter:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.title-letter:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.title-letter:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+/* Floating animation - optimized for performance */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateZ(0);
+  }
+  50% {
+    transform: translateY(-8px) translateZ(0);
+  }
+}
+
+/* Hover effect with bounce */
+.title-letter:hover {
+  animation: bounce 0.5s ease;
+  filter: brightness(1.2);
+  transform: translateY(-5px) translateZ(0);
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0) translateZ(0);
+  }
+  50% {
+    transform: translateY(-15px) translateZ(0);
+  }
+}
+
+/* Removed complex effects for better performance */
+
+/* Modern Subtitle */
+.modern-subtitle {
+  text-align: center;
+  font-size: 32px;
+  color: #2D3436;
+  font-weight: 800;
+  margin-top: 0px;
+  letter-spacing: 1px;
+  opacity: 0.8;
+  margin-bottom: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+/* Conference info */
+.conference-top {
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: #bb0202;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+/* Modern Authors Section */
+.authors-modern-container {
+  text-align: center;
+  margin: 30px 0 20px 0;
+}
+
+.authors-modern-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-bottom: 15px;
+}
+
+.author-modern-link {
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.author-modern-link:hover {
+  transform: translateY(-2px);
+}
+
+.author-name-modern {
+  font-size: 18px;
+  color: #2D3436;
+  font-weight: 500;
+  padding: 8px 16px;
+  background: rgba(116, 185, 255, 0.1);
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  display: inline-block;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.author-modern-link:hover .author-name-modern {
+  background: rgba(116, 185, 255, 0.2);
+  color: #1A365D;
+}
+
+.affiliation-sup {
+  font-size: 14px;
+  color: #667eea;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+/* Modern Institutions */
+.institutions-modern {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 20px 0 30px 0;
+  flex-wrap: wrap;
+}
+
+.institution-item-modern {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.institution-number-modern {
+  font-size: 16px;
+  font-weight: bold;
+  color: #74B9FF;
+}
+
+.institution-name-modern {
+  font-size: 18px;
+  color: #636E72;
+  font-style: italic;
+}
+
+/* Modern Buttons */
+.buttons-modern {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.button-modern {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  text-transform: capitalize;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.button-modern span {
+  position: relative;
+  z-index: 2;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+.button-icon {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  z-index: 2;
+  transform: scale(1.15) rotate(3deg);
+}
+
+/* Paper/arXiv button - Light purple gradient */
+.button-paper {
+  background: linear-gradient(135deg, #DDD6FE 0%, #C4B5FD 100%);
+  color: #581C87;
+  border: none;
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+}
+
+/* Code button - Light blue-green gradient */
+.button-code {
+  background: linear-gradient(135deg, #BFDBFE 0%, #A7F3D0 100%);
+  color: #1E40AF;
+  border: none;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+/* Video button - Light pink-orange gradient */
+.button-video {
+  background: linear-gradient(135deg, #FDA4AF 0%, #FDBA74 100%);
+  color: #9F1239;
+  border: none;
+  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.3);
+}
+
+.button-modern:active {
+  transform: scale(0.98) translateY(-3px);
+}
+
+/* arXiv icon styling for paper button */
+.button-paper .arxiv-icon {
+  filter: brightness(0) sepia(1) saturate(5) hue-rotate(260deg);
+}
+
+
+/* YouTube icon fix */
+.youtube-logo {
+  width: 20px;
+  height: 20px;
+  display: none;
+}
+
+/* Performance optimization for videos */
+video {
+  background: #f0f0f0;
+  min-height: 200px;
+}
+
+video:not([controls]) {
+  cursor: pointer;
+}
+
+/* Reduce initial load for 3D models */
+model-viewer {
+  min-height: 400px;
+  background: #f5f5f5;
+}
+
+/* BibTeX code block styling */
+pre {
+  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+pre code {
+  font-family: inherit;
+}
+
+/* Responsive adjustments for modern styles */
+@media screen and (max-width: 1200px) {
+  h1.modern-title {
+    font-size: 60px !important;
+    letter-spacing: 12px;
+    padding-left: 12px;
+  }
+  
+  .modern-subtitle {
+    font-size: 22px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  h1.modern-title {
+    font-size: 48px !important;
+    letter-spacing: 8px;
+    padding-left: 8px;
+  }
+  
+  .modern-subtitle {
+    font-size: 18px;
+  }
+  
+  .authors-modern-row {
+    gap: 15px;
+  }
+  
+  .author-name-modern {
+    font-size: 16px;
+    padding: 6px 12px;
+  }
+  
+  .institutions-modern {
+    gap: 20px;
+  }
+  
+  .institution-name-modern {
+    font-size: 16px;
+  }
+  
+  .buttons-modern {
+    gap: 15px;
+  }
+  
+  .button-modern {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
 }
