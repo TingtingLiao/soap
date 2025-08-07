@@ -430,7 +430,6 @@
     
     <!-- ---------------- Chinese Style ------------------- -->  
     <div class="card">  
-      <img src="./src/video/application/chinese-00-d0.png" class="overlay-image" alt="Overlay Image">
       <video poster="" id="card-image" autoplay controls muted  width="100%" preload="none" loading="lazy">
         <source src="./src/video/application/chinese-00-d20.mp4" type="video/mp4"> 
       </video>
@@ -438,21 +437,18 @@
 
     <!-- ---------------- Painting Style ------------------- -->
     <div class="card">
-      <img src="./src/video/application/painting-02.png" class="overlay-image" alt="Overlay Image">
       <video poster="" id="card-image" autoplay controls muted  width="100%" preload="none" loading="lazy"> 
         <source src="./src/video/application/painting-02-d20.mp4" type="video/mp4">
       </video>
     </div>
 
     <div class="card">
-      <img src="./src/video/application/painting-01.png" class="overlay-image" alt="Overlay Image">
       <video poster="" id="card-image" autoplay controls muted  width="100%" preload="none" loading="lazy">
         <source src="./src/video/application/painting-01-d0.mp4" type="video/mp4">
       </video>
     </div>
 
     <div class="card">
-      <img src="./src/video/application/painting-00.png" class="overlay-image" alt="Overlay Image">
       <video poster="" id="card-image" autoplay controls muted  width="100%" preload="none" loading="lazy">
         <source src="./src/video/application/painting-00-d18.mp4" type="video/mp4">
       </video>
@@ -460,14 +456,12 @@
 
     <!-- ---------------- celebrity Style ------------------- --> 
     <div class="card">
-      <img src="./src/video/application/celebrity-00.png" class="overlay-image" alt="Overlay Image">
       <video poster="" id="card-image" autoplay controls muted  width="100%" preload="none" loading="lazy">
         <source src="./src/video/application/celebrity-00-d0.mp4" type="video/mp4">
       </video> 
     </div>
 
     <div class="card"> 
-      <img src="./src/video/application/celebrity-01.png" class="overlay-image" alt="Overlay Image">
       <video poster="" id="card-image" autoplay controls muted  width="100%" preload="none" loading="lazy">
         <source src="./src/video/application/celebrity-01-d20.mp4" type="video/mp4">
       </video>
@@ -769,6 +763,144 @@
       el.style.opacity = '0';
       el.style.transition = 'opacity 0.6s ease';
       observer.observe(el);
+    });
+
+    // Removed parallax tilt effect as requested
+
+    // Confetti effect on page load
+    function createConfetti() {
+      const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#dda0dd', '#feca57'];
+      
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+          confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+          document.body.appendChild(confetti);
+          
+          setTimeout(() => confetti.remove(), 5000);
+        }, i * 30);
+      }
+    }
+    
+    // Trigger confetti on page load
+    window.addEventListener('load', () => {
+      setTimeout(createConfetti, 500);
+    });
+
+    // Add sparkle to conference text
+    document.querySelector('.conference-top').classList.add('sparkle');
+
+    // Add interactive bounce to title letters
+    document.querySelectorAll('.title-letter').forEach(letter => {
+      letter.addEventListener('click', function() {
+        this.classList.add('bounce');
+        setTimeout(() => {
+          this.classList.remove('bounce');
+        }, 500);
+      });
+    });
+
+    // Typewriter effect for abstract
+    window.addEventListener('DOMContentLoaded', () => {
+      const contentSections = document.querySelectorAll('.content');
+      let abstractSection = null;
+      let abstractText = null;
+      
+      // Find the abstract section by looking for the one with "Abstract" heading
+      contentSections.forEach(section => {
+        const heading = section.querySelector('h2');
+        if (heading && heading.textContent.trim().toLowerCase().includes('abstract')) {
+          abstractSection = section;
+          abstractText = section.querySelector('p');
+          console.log('Found abstract section:', abstractText); // Debug
+        }
+      });
+      
+      if (abstractText && abstractText.textContent.trim().length > 0) {
+        const originalText = abstractText.textContent.trim();
+        abstractText.setAttribute('data-text', originalText);
+        abstractText.textContent = '';
+        abstractText.style.minHeight = '100px'; // Prevent layout shift
+        abstractText.classList.add('typewriter-text');
+        
+        let index = 0;
+        let isTyping = false;
+        
+        const typeWriter = () => {
+          if (isTyping) return;
+          isTyping = true;
+          
+          const typeInterval = setInterval(() => {
+            if (index < originalText.length) {
+              abstractText.textContent += originalText.charAt(index);
+              index++;
+            } else {
+              clearInterval(typeInterval);
+              isTyping = false;
+            }
+          }, 15); // Typing speed
+        };
+        
+        // Start typewriter when abstract is visible
+        const abstractObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !isTyping && index === 0) {
+              console.log('Starting typewriter effect'); // Debug
+              setTimeout(typeWriter, 300); // Small delay before starting
+              abstractObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1 });
+        
+        abstractObserver.observe(abstractText);
+      } else {
+        console.log('Abstract text not found or empty'); // Debug
+      }
+    });
+
+    // Add wobble animation to buttons on click
+    document.querySelectorAll('.button-modern').forEach(button => {
+      button.addEventListener('click', function() {
+        this.style.animation = 'wobble 0.5s ease';
+        setTimeout(() => {
+          this.style.animation = '';
+        }, 500);
+      });
+    });
+
+    // Rainbow border for video container on hover
+    document.querySelector('.video-container').style.border = '3px solid transparent';
+    document.querySelector('.video-container').style.borderRadius = '10px';
+    document.querySelector('.video-container').addEventListener('mouseenter', function() {
+      this.style.animation = 'rainbow-border 2s linear infinite';
+      this.style.border = '3px solid #ff6b6b';
+    });
+    document.querySelector('.video-container').addEventListener('mouseleave', function() {
+      this.style.animation = '';
+      this.style.border = '3px solid transparent';
+    });
+
+    // Add emoji reactions on button clicks
+    const emojis = ['🎉', '🚀', '⭐', '💫', '🎨', '🔥', '✨', '🌟'];
+    document.querySelectorAll('.button-modern').forEach(button => {
+      button.addEventListener('click', function(e) {
+        const emoji = document.createElement('span');
+        emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        emoji.style.position = 'fixed';
+        emoji.style.left = e.clientX + 'px';
+        emoji.style.top = e.clientY + 'px';
+        emoji.style.fontSize = '30px';
+        emoji.style.pointerEvents = 'none';
+        emoji.style.animation = 'confetti-fall 1s ease-out';
+        emoji.style.zIndex = '9999';
+        document.body.appendChild(emoji);
+        
+        setTimeout(() => emoji.remove(), 1000);
+      });
     });
   </script>
 </body></html>
