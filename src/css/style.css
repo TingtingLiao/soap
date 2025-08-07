@@ -336,8 +336,11 @@ h1.modern-title {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 20px;
   margin-bottom: 15px;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .author-modern-link {
@@ -351,10 +354,10 @@ h1.modern-title {
 }
 
 .author-name-modern {
-  font-size: 18px;
+  font-size: 16px;
   color: #2D3436;
   font-weight: 500;
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: rgba(116, 185, 255, 0.1);
   border-radius: 25px;
   transition: all 0.3s ease;
@@ -470,9 +473,9 @@ h1.modern-title {
   transform: scale(0.98) translateY(-3px);
 }
 
-/* arXiv icon styling for paper button */
+/* arXiv icon styling for paper button - keep original colors */
 .button-paper .arxiv-icon {
-  filter: brightness(0) sepia(1) saturate(5) hue-rotate(260deg);
+  filter: none;
 }
 
 
