@@ -3,18 +3,147 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
   font-weight: 400;
-  background-color: #fff;
+  background: #f8f9fb;
   transform: scale(1);
   transform-origin: 0 0;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Add subtle animated background shapes - removed */
+body::before {
+  display: none;
+}
+
+/* Add decorative pattern overlay - removed */
+body::after {
+  display: none;
+}
+
+/* Floating accent shapes */
+@keyframes float-shape {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+.content:nth-of-type(odd)::before {
+  display: none;
+}
+
+.content:nth-of-type(even)::before {
+  display: none;
+}
+
+/* Hover effect for content blocks */
+.content:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 35px 70px rgba(0, 0, 0, 0.12),
+    0 18px 35px rgba(0, 0, 0, 0.08),
+    0 8px 18px rgba(0, 0, 0, 0.04);
 }
 .content {
   width: 1200px;
-  padding: 25px 50px;
-  margin: 25px auto;
-  background-color: white;
-  box-shadow: 0px 0px 10px #999;
-  border-radius: 15px;
+  padding: 50px 50px 40px 50px;
+  margin: 20px auto;
+  background: #ffffff;
+  border-radius: 30px;
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.12),
+    0 15px 30px rgba(0, 0, 0, 0.08),
+    0 5px 15px rgba(0, 0, 0, 0.04);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
+  transform: translateY(0);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Header content block with fancy styling */
+.header-content {
+  width: 1200px;
+  padding: 50px 50px 40px 50px;
+  margin: 20px auto;
+  background: #ffffff;
+  border-radius: 30px;
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.12),
+    0 15px 30px rgba(0, 0, 0, 0.08),
+    0 5px 15px rgba(0, 0, 0, 0.04);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
+  transform: translateY(0);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover effect for the entire block */
+.header-content:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 35px 70px rgba(0, 0, 0, 0.12),
+    0 18px 35px rgba(0, 0, 0, 0.08),
+    0 8px 18px rgba(0, 0, 0, 0.04);
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+  0% { background-position: 200% 0, 0 0; }
+  100% { background-position: -200% 0, 0 0; }
+}
+
+/* Animated gradient border - removed */
+.header-content::before {
+  display: none;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glowing orbs background - removed */
+.header-content::after {
+  display: none;
+}
+
+@keyframes glow-pulse {
+  0% { 
+    opacity: 0.5; 
+    transform: scale(1) rotate(0deg); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1.2) rotate(5deg); 
+  }
+}
+
+/* Ensure content is above decorations */
+.header-content > *, .content > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Add extra decorative elements to HTML */
+.header-decoration {
+  position: absolute;
+  pointer-events: none;
+}
+
+.header-decoration.top-left {
+  display: none;
+}
+
+.header-decoration.bottom-right {
+  display: none;
+}
+
+@keyframes float-decoration {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(10px, -10px) scale(1.1); }
+  66% { transform: translate(-10px, 10px) scale(0.9); }
 }
 .contentblock {
   width: 950px;
@@ -53,10 +182,129 @@ h1 {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
 }
 h2 {
-  font-size: 30px;
-  font-weight: 600;
+  font-size: 36px;
+  font-weight: 700;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
   color: #2D3436;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  margin: 40px 0 30px 0;
+}
+
+/* Fancy section title styling */
+h2 strong {
+  position: relative;
+  display: inline-block;
+  padding: 0 30px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Decorative lines on both sides of title */
+h2::before,
+h2::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 25%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #667eea, transparent);
+  transition: width 0.3s ease;
+}
+
+h2::before {
+  left: 10%;
+}
+
+h2::after {
+  right: 10%;
+}
+
+/* Expand lines on hover */
+h2:hover::before,
+h2:hover::after {
+  width: 35%;
+}
+
+/* Add subtle animation to title text */
+h2 strong {
+  transition: transform 0.3s ease, letter-spacing 0.3s ease;
+}
+
+h2:hover strong {
+  transform: scale(1.05);
+  letter-spacing: 3px;
+}
+
+/* Add subtle shadow under title text */
+h2 strong {
+  text-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Add fancy section dividers */
+.content {
+  position: relative;
+  padding-bottom: 60px;
+}
+
+.content::after {
+  content: '';
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #667eea, #764ba2, transparent);
+  border-radius: 3px;
+}
+
+/* Different gradient colors for each section */
+.content:nth-of-type(2) h2 strong { /* Abstract */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.content:nth-of-type(3) h2 strong { /* Method */
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.content:nth-of-type(4) h2 strong { /* Reconstructions */
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.content:nth-of-type(5) h2 strong { /* Animation */
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.content:nth-of-type(6) h2 strong { /* Applications */
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.content:nth-of-type(7) h2 strong { /* Mesh Gallery */
+  background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.content:nth-of-type(8) h2 strong { /* Video */
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 code {
   display: block;
